@@ -81,8 +81,7 @@ public class acChestManager {
 							int amount = Integer.parseInt(parts[1]);
 							short damage = Short.parseShort(parts[2]);
 							if (type != 0) {
-								// FIXME: broken!
-								e.a(p, new ItemStack(type, amount, damage));
+								e.setItem(p, new ItemStack(type, amount, damage));
 							}
 
 							++p;

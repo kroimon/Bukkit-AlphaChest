@@ -4,7 +4,7 @@
 
 	<groupId>com.mast3rplan</groupId>
 	<artifactId>AlphaChest</artifactId>
-	<version>1.6.1</version>
+	<version>1.6.2</version>
 	<name>AlphaChest</name>
 
 	<scm>
@@ -43,6 +43,12 @@
 
 	<build>
 		<finalName>${project.artifactId}</finalName>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>

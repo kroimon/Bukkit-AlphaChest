@@ -1,6 +1,6 @@
-name: AlphaChest
+name: ${project.name}
 main: com.mast3rplan.alphachest.acPlugin
-version: 1.6.1
+version: ${project.version}
 website: http://mc.mast3rplan.com/
 author: Mast3rPlan
 description: >

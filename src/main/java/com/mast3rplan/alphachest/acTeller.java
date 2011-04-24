@@ -1,6 +1,5 @@
 package com.mast3rplan.alphachest;
 
-import com.mast3rplan.alphachest.acTellerType;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 

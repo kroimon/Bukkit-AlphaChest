@@ -31,6 +31,13 @@ public class acPlugin extends JavaPlugin {
 		setupPermissions();
 		chestManager.load();
 
+		getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
+			public void run() {
+				chestManager.save();
+				log.fine("[AlphaChest] auto-saved chests");
+			}
+		}, 15000, 30000); // delay=5min, period=10min
+
 		PluginDescriptionFile pdfFile = getDescription();
 		log.info("[" + pdfFile.getName() + "] version [" + pdfFile.getVersion() + "] enabled");
 	}

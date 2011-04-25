@@ -1,5 +1,6 @@
 package com.mast3rplan.alphachest;
 
+import com.Balor.AutoSave.AutoSaveThread;
 import com.nijiko.permissions.PermissionHandler;
 import com.nijikokun.bukkit.Permissions.Permissions;
 import java.io.BufferedReader;
@@ -22,6 +23,7 @@ import org.bukkit.util.config.Configuration;
 
 public class acPlugin extends JavaPlugin {
 	private static Logger log = Logger.getLogger("Minecraft");
+	private AutoSaveThread autoSave;
 
 	public PermissionHandler permissionHandler;
 
@@ -30,6 +32,7 @@ public class acPlugin extends JavaPlugin {
 	public void onDisable() {
 		this.chestManager.save();
 		PluginDescriptionFile pdfFile = this.getDescription();
+		autoSave.stopIt();
 		log.info("[" + pdfFile.getName() + "] version [" + pdfFile.getVersion() + "] disabled");
 	}
 
@@ -38,6 +41,8 @@ public class acPlugin extends JavaPlugin {
 		chestManager.load();
 
 		PluginDescriptionFile pdfFile = getDescription();
+		autoSave= new AutoSaveThread(chestManager);
+		autoSave.start();
 		log.info("[" + pdfFile.getName() + "] version [" + pdfFile.getVersion() + "] enabled");
 	}
 

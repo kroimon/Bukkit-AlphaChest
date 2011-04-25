@@ -108,15 +108,8 @@ public class acChestManager {
 				BufferedWriter out = new BufferedWriter(new FileWriter(chestFile));
 
 				for (ItemStack stack : chest.getContents()) {
-					int type = 0;
-					int amount = 0;
-					int damage = -1;
-
-					type = stack.id;
-					amount = stack.count;
-					damage = stack.damage;
-
-					out.write(type + ":" + amount + ":" + damage + "\r\n");
+					if (stack != null)
+						out.write(stack.id + ":" + stack.count + ":" + stack.damage + "\r\n");
 				}
 
 				out.close();

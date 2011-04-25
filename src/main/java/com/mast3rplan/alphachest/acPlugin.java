@@ -27,18 +27,18 @@ public class acPlugin extends JavaPlugin {
 
 	private acChestManager chestManager = new acChestManager(getDataFolder());
 
-	public void onDisable() {
-		this.chestManager.save();
-		PluginDescriptionFile pdfFile = this.getDescription();
-		log.info("[" + pdfFile.getName() + "] version [" + pdfFile.getVersion() + "] disabled");
-	}
-
 	public void onEnable() {
 		setupPermissions();
 		chestManager.load();
 
 		PluginDescriptionFile pdfFile = getDescription();
 		log.info("[" + pdfFile.getName() + "] version [" + pdfFile.getVersion() + "] enabled");
+	}
+
+	public void onDisable() {
+		chestManager.save();
+		PluginDescriptionFile pdfFile = getDescription();
+		log.info("[" + pdfFile.getName() + "] version [" + pdfFile.getVersion() + "] disabled");
 	}
 
 	public void setupPermissions() {

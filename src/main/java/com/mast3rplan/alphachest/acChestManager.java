@@ -45,18 +45,15 @@ public class acChestManager {
 
 		int loadedChests = 0;
 
-		File chestsFolder = new File(dataFolder, "chests");
-		if (!chestsFolder.exists())
-			chestsFolder.mkdir();
-
-		for (File chestFile : chestsFolder.listFiles()) {
+		dataFolder.mkdirs();
+		for (File chestFile : dataFolder.listFiles()) {
 			if (chestFile.getName().endsWith(".chest")) {
 				try {
 					InventoryLargeChest chest = new InventoryLargeChest("Large chest", new acChest(), new acChest());
 					String playerName = chestFile.getName().substring(0, chestFile.getName().length() - 6);
 
 					BufferedReader in = new BufferedReader(new FileReader(chestFile));
-					int p = 0;
+					int field = 0;
 
 					String strLine;
 					while ((strLine = in.readLine()) != null) {
@@ -67,13 +64,12 @@ public class acChestManager {
 								int amount = Integer.parseInt(parts[1]);
 								short damage = Short.parseShort(parts[2]);
 								if (type != 0) {
-									chest.setItem(p, new ItemStack(type, amount, damage));
+									chest.setItem(field, new ItemStack(type, amount, damage));
 								}
-	
-								++p;
 							} catch (NumberFormatException e) {
 								// ignore
 							}
+							++field;
 						}
 					}
 
@@ -93,14 +89,13 @@ public class acChestManager {
 	public void save() {
 		int savedChests = 0;
 
-		File chestsFolder = new File(dataFolder, "chests");
-		chestsFolder.mkdirs();
+		dataFolder.mkdirs();
 
 		for (String playerName : chests.keySet()) {
 			InventoryLargeChest chest = chests.get(playerName);
 
 			try {
-				File chestFile = new File(chestsFolder, playerName + ".chest");
+				File chestFile = new File(dataFolder, playerName + ".chest");
 				if (chestFile.exists())
 					chestFile.delete();
 				chestFile.createNewFile();
@@ -110,6 +105,8 @@ public class acChestManager {
 				for (ItemStack stack : chest.getContents()) {
 					if (stack != null)
 						out.write(stack.id + ":" + stack.count + ":" + stack.damage + "\r\n");
+					else
+						out.write("0:0:0\r\n");
 				}
 
 				out.close();

@@ -25,10 +25,12 @@ public class acPlugin extends JavaPlugin {
 
 	public PermissionHandler permissionHandler;
 
-	private acChestManager chestManager = new acChestManager(getDataFolder());
+	private acChestManager chestManager;
 
 	public void onEnable() {
 		setupPermissions();
+
+		chestManager = new acChestManager(new File(getDataFolder(), "chests"));
 		chestManager.load();
 
 		getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {

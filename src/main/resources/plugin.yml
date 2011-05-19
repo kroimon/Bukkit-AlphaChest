@@ -1,31 +1,23 @@
 name: ${project.name}
 main: com.mast3rplan.alphachest.AlphaChestPlugin
 version: ${project.version}
-website: http://mc.mast3rplan.com/
 author: Mast3rPlan
 description: >
-             Plugin that allows you to have private chests.
+             Plugin that allows you to have virtual private chests.
+
 commands:
     chest:
-        description: The base chest command for Alpha Chest
+        description: Opens a virtual player-specific chest.
         usage: |
               /<command> - Opens your private chest.
               /<command> [player] - Opens someone else's chest.
     clearchest:
-        description: Clears a chest
+        description: Clears the contents of a chest.
         usage: |
               /<command> - Clears your private chest.
               /<command> [player] - Clears someone else's chest.
     savechests:
-        description: Saves the chests
-        usage: |
-              /<command> - Saves all chests.
-    reloadchests:
-        description: Reloads the seperate configuration file if in-use.
-        usage: |
-              /<command> - Reloads the seperate configuration file if in-use.
+        description: Saves the chests to disk.
     workbench:
         aliases: [craft, craftbox, craftingbox]
-        description: Opens a virtual workbench
-        usage: |
-              /<command>
+        description: Opens a virtual workbench.

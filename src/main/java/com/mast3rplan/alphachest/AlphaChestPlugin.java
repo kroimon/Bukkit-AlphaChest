@@ -1,6 +1,7 @@
 package com.mast3rplan.alphachest;
 
-import com.mast3rplan.alphachest.Teller.Type;
+import com.mast3rplan.alphachest.commands.ChestCommands;
+import com.mast3rplan.alphachest.commands.WorkbenchCommand;
 import com.nijiko.permissions.PermissionHandler;
 import com.nijikokun.bukkit.Permissions.Permissions;
 import java.io.BufferedReader;
@@ -11,12 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-import net.minecraft.server.EntityPlayer;
-import net.minecraft.server.Packet100OpenWindow;
-
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
-import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
@@ -52,6 +47,13 @@ public class AlphaChestPlugin extends JavaPlugin {
 		// Initialize
 		chestManager = new AlphaChestManager(new File(getDataFolder(), "chests"));
 		chestManager.load();
+
+		// Set command executors
+		final ChestCommands chestCommands = new ChestCommands(this, chestManager);
+		getCommand("chest").setExecutor(chestCommands);
+		getCommand("clearchest").setExecutor(chestCommands);
+		getCommand("savechests").setExecutor(chestCommands);
+		getCommand("workbench").setExecutor(new WorkbenchCommand(this));
 
 		// Schedule auto-saving
 		int autosaveInterval = config.getInt("autosave", 10) * 3000;
@@ -101,7 +103,7 @@ public class AlphaChestPlugin extends JavaPlugin {
 		return ops;
 	}
 
-	private boolean hasPermission(Player player, String permission) {
+	public boolean hasPermission(Player player, String permission) {
 		if (permissionHandler != null) {
 			return permissionHandler.has(player, permission);
 		} else {
@@ -121,112 +123,4 @@ public class AlphaChestPlugin extends JavaPlugin {
 		}
 	}
 
-	public boolean onCommand(CommandSender sender, Command command, String commandLabel, String[] args) {
-		String name = command.getName();
-		if (name.equals("chest"))
-			return performChestCommand(sender, args);
-		else if (name.equalsIgnoreCase("savechests"))
-			return performSaveChestsCommand(sender, args);
-		else if (name.equalsIgnoreCase("reloadchests"))
-			return performReloadChestsCommand(sender, args);
-		else if (name.equalsIgnoreCase("clearchest"))
-			return performClearChestCommand(sender, args);
-		else if (name.equalsIgnoreCase("workbench"))
-			return performWorkbenchCommand(sender, args);
-		else
-			return false;
-	}
-
-	private boolean performClearChestCommand(CommandSender sender, String[] args) {
-		if (args.length >= 1) {
-			if ((sender instanceof Player) && !hasPermission((Player) sender, "ac.admin")) {
-				Teller.tell(sender, Type.Warning, "You\'re not allowed to clear other user's chests.");
-				return true;
-			}
-			chestManager.removeChest(args[0]);
-			Teller.tell(sender, Type.Success, "Successfully cleared " + args[0] + "\'s chest.");
-			return true;
-		} else {
-			if (sender instanceof Player) {
-				final Player player = (Player) sender;
-				if (!hasPermission(player, "ac.chest")) {
-					Teller.tell(player, Type.Warning, "You\'re not allowed to use this command.");
-				} else {
-					chestManager.removeChest(player.getName());
-					Teller.tell(player, Type.Success, "Successfully cleared your chest.");
-				}
-				return true;
-			}
-		}
-		return false;
-	}
-
-	private boolean performReloadChestsCommand(CommandSender sender, String[] args) {
-		if (sender instanceof Player) {
-			if (!hasPermission((Player) sender, "ac.reload")) {
-				Teller.tell(sender, Type.Warning, "You\'re not allowed to use this command.");
-				return true;
-			}
-		}
-
-		getConfiguration().load();
-		Teller.tell(sender, Type.Success, "Reloaded seperate settings.");
-		return true;
-	}
-
-	private boolean performSaveChestsCommand(CommandSender sender, String[] args) {
-		if (sender instanceof Player) {
-			if (!hasPermission((Player) sender, "ac.save")) {
-				Teller.tell(sender, Type.Warning, "You\'re not allowed to use this command.");
-				return true;
-			}
-		}
-
-		chestManager.save();
-		Teller.tell(sender, Type.Success, "Saved all chests.");
-		return true;
-	}
-
-	private boolean performChestCommand(CommandSender sender, String[] args) {
-		if (sender instanceof Player) {
-			Player player = (Player) sender;
-			EntityPlayer eh;
-			if (args.length == 1) {
-				if (hasPermission(player, "ac.admin")) {
-					eh = ((CraftPlayer) sender).getHandle();
-					eh.a(chestManager.getChest(args[0]));
-				} else {
-					Teller.tell(player, Type.Warning, "You\'re not allowed to use this command.");
-				}
-				return true;
-
-			} else if (args.length == 0) {
-				if (hasPermission(player, "ac.chest")) {
-					eh = ((CraftPlayer) sender).getHandle();
-					eh.a(chestManager.getChest(player.getName()));
-				} else {
-					Teller.tell(player, Type.Warning, "You\'re not allowed to use this command.");
-				}
-				return true;
-			}
-		}
-		return false;
-	}
-
-	private boolean performWorkbenchCommand(CommandSender sender, String[] args) {
-		if (sender instanceof Player) {
-			final Player player = (Player) sender;
-			if (hasPermission(player, "ac.workbench")) {
-				final EntityPlayer eh = ((CraftPlayer) sender).getHandle();
-				
-				final int bI = 1; // seems like the window ID - should be safe to use a static one
-		        eh.netServerHandler.sendPacket(new Packet100OpenWindow(bI, 1, "Virtual Crafting", 9));
-		        eh.activeContainer = new AlphaWorkbench(eh, bI);
-			} else {
-				Teller.tell(player, Type.Warning, "You\'re not allowed to use this command.");
-			}
-			return true;
-		}
-		return false;
-	}
 }

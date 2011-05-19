@@ -38,6 +38,8 @@ public class acPlugin extends JavaPlugin {
 			config.setProperty("admincmds", admincmds);
 			config.setProperty("admins", getOps());
 
+			config.setProperty("autosave", 10);
+
 			config.save();
 		}
 
@@ -49,12 +51,13 @@ public class acPlugin extends JavaPlugin {
 		chestManager.load();
 
 		// Schedule auto-saving
+		int autosaveInterval = config.getInt("autosave", 10) * 3000;
 		getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
 			public void run() {
 				chestManager.save();
 				log.fine("[AlphaChest] auto-saved chests");
 			}
-		}, 15000, 30000); // delay=5min, period=10min
+		}, autosaveInterval, autosaveInterval);
 
 		// Success
 		PluginDescriptionFile pdfFile = getDescription();

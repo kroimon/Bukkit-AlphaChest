@@ -1,5 +1,5 @@
 name: ${project.name}
-main: com.mast3rplan.alphachest.acPlugin
+main: com.mast3rplan.alphachest.AlphaChestPlugin
 version: ${project.version}
 website: http://mc.mast3rplan.com/
 author: Mast3rPlan

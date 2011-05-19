@@ -3,7 +3,7 @@ package com.mast3rplan.alphachest;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
-public class acTeller {
+public class Teller {
 
 	public enum Type {
 		Info, Success, Warning, Error, Misc;

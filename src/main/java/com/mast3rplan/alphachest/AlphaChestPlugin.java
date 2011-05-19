@@ -1,6 +1,6 @@
 package com.mast3rplan.alphachest;
 
-import com.mast3rplan.alphachest.acTeller.Type;
+import com.mast3rplan.alphachest.Teller.Type;
 import com.nijiko.permissions.PermissionHandler;
 import com.nijikokun.bukkit.Permissions.Permissions;
 import java.io.BufferedReader;
@@ -20,11 +20,11 @@ import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.config.Configuration;
 
-public class acPlugin extends JavaPlugin {
+public class AlphaChestPlugin extends JavaPlugin {
 	private static final Logger log = Logger.getLogger("Minecraft");
 
 	private PermissionHandler permissionHandler;
-	private acChestManager chestManager;
+	private AlphaChestManager chestManager;
 
 	public void onEnable() {
 		// Load/create configuration
@@ -47,7 +47,7 @@ public class acPlugin extends JavaPlugin {
 		setupPermissions();
 
 		// Initialize
-		chestManager = new acChestManager(new File(getDataFolder(), "chests"));
+		chestManager = new AlphaChestManager(new File(getDataFolder(), "chests"));
 		chestManager.load();
 
 		// Schedule auto-saving
@@ -121,34 +121,34 @@ public class acPlugin extends JavaPlugin {
 	public boolean onCommand(CommandSender sender, Command command, String commandLabel, String[] args) {
 		String name = command.getName();
 		if (name.equals("chest"))
-			return performAcChest(sender, args);
+			return performChestCommand(sender, args);
 		else if (name.equalsIgnoreCase("savechests"))
-			return performAcSaveChests(sender, args);
+			return performSaveChestsCommand(sender, args);
 		else if (name.equalsIgnoreCase("reloadchests"))
-			return performAcReloadChests(sender, args);
+			return performReloadChestsCommand(sender, args);
 		else if (name.equalsIgnoreCase("clearchest"))
-			return performAcClearChest(sender, args);
+			return performClearChestCommand(sender, args);
 		else
 			return false;
 	}
 
-	private boolean performAcClearChest(CommandSender sender, String[] args) {
+	private boolean performClearChestCommand(CommandSender sender, String[] args) {
 		if (args.length >= 1) {
 			if ((sender instanceof Player) && !hasPermission((Player) sender, "ac.admin")) {
-				acTeller.tell(sender, Type.Warning, "You\'re not allowed to clear other user's chests.");
+				Teller.tell(sender, Type.Warning, "You\'re not allowed to clear other user's chests.");
 				return true;
 			}
 			chestManager.removeChest(args[0]);
-			acTeller.tell(sender, Type.Success, "Successfully cleared " + args[0] + "\'s chest.");
+			Teller.tell(sender, Type.Success, "Successfully cleared " + args[0] + "\'s chest.");
 			return true;
 		} else {
 			if (sender instanceof Player) {
 				final Player player = (Player) sender;
 				if (!hasPermission(player, "ac.chest")) {
-					acTeller.tell(player, Type.Warning, "You\'re not allowed to use this command.");
+					Teller.tell(player, Type.Warning, "You\'re not allowed to use this command.");
 				} else {
 					chestManager.removeChest(player.getName());
-					acTeller.tell(player, Type.Success, "Successfully cleared your chest.");
+					Teller.tell(player, Type.Success, "Successfully cleared your chest.");
 				}
 				return true;
 			}
@@ -156,33 +156,33 @@ public class acPlugin extends JavaPlugin {
 		return false;
 	}
 
-	private boolean performAcReloadChests(CommandSender sender, String[] args) {
+	private boolean performReloadChestsCommand(CommandSender sender, String[] args) {
 		if (sender instanceof Player) {
 			if (!hasPermission((Player) sender, "ac.reload")) {
-				acTeller.tell(sender, Type.Warning, "You\'re not allowed to use this command.");
+				Teller.tell(sender, Type.Warning, "You\'re not allowed to use this command.");
 				return true;
 			}
 		}
 
 		getConfiguration().load();
-		acTeller.tell(sender, Type.Success, "Reloaded seperate settings.");
+		Teller.tell(sender, Type.Success, "Reloaded seperate settings.");
 		return true;
 	}
 
-	private boolean performAcSaveChests(CommandSender sender, String[] args) {
+	private boolean performSaveChestsCommand(CommandSender sender, String[] args) {
 		if (sender instanceof Player) {
 			if (!hasPermission((Player) sender, "ac.save")) {
-				acTeller.tell(sender, Type.Warning, "You\'re not allowed to use this command.");
+				Teller.tell(sender, Type.Warning, "You\'re not allowed to use this command.");
 				return true;
 			}
 		}
 
 		chestManager.save();
-		acTeller.tell(sender, Type.Success, "Saved all chests.");
+		Teller.tell(sender, Type.Success, "Saved all chests.");
 		return true;
 	}
 
-	private boolean performAcChest(CommandSender sender, String[] args) {
+	private boolean performChestCommand(CommandSender sender, String[] args) {
 		if (sender instanceof Player) {
 			Player player = (Player) sender;
 			EntityPlayer eh;
@@ -191,7 +191,7 @@ public class acPlugin extends JavaPlugin {
 					eh = ((CraftPlayer) sender).getHandle();
 					eh.a(chestManager.getChest(args[0]));
 				} else {
-					acTeller.tell(player, Type.Warning, "You\'re not allowed to use this command.");
+					Teller.tell(player, Type.Warning, "You\'re not allowed to use this command.");
 				}
 				return true;
 
@@ -200,7 +200,7 @@ public class acPlugin extends JavaPlugin {
 					eh = ((CraftPlayer) sender).getHandle();
 					eh.a(chestManager.getChest(player.getName()));
 				} else {
-					acTeller.tell(player, Type.Warning, "You\'re not allowed to use this command.");
+					Teller.tell(player, Type.Warning, "You\'re not allowed to use this command.");
 				}
 				return true;
 			}

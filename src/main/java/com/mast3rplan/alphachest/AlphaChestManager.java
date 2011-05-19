@@ -12,13 +12,13 @@ import java.util.logging.Logger;
 import net.minecraft.server.InventoryLargeChest;
 import net.minecraft.server.ItemStack;
 
-public class acChestManager {
+public class AlphaChestManager {
 	private static Logger log = Logger.getLogger("Minecraft");
 
 	private final HashMap<String, InventoryLargeChest> chests;
 	private final File dataFolder;
 
-	public acChestManager(File dataFolder) {
+	public AlphaChestManager(File dataFolder) {
 		this.dataFolder = dataFolder;
 		this.chests = new HashMap<String, InventoryLargeChest>();
 	}
@@ -33,7 +33,7 @@ public class acChestManager {
 	}
 
 	private InventoryLargeChest addChest(String playerName) {
-		InventoryLargeChest chest = new InventoryLargeChest(playerName + "\'s Virtual Chest", new acChest(), new acChest());
+		InventoryLargeChest chest = new InventoryLargeChest(playerName + "\'s Virtual Chest", new AlphaChest(), new AlphaChest());
 		chests.put(playerName.toLowerCase(), chest);
 		return chest;
 	}
@@ -55,7 +55,7 @@ public class acChestManager {
 		};
 		for (File chestFile : dataFolder.listFiles(filter)) {
 			try {
-				final InventoryLargeChest chest = new InventoryLargeChest("Large chest", new acChest(), new acChest());
+				final InventoryLargeChest chest = new InventoryLargeChest("Large chest", new AlphaChest(), new AlphaChest());
 				final String playerName = chestFile.getName().substring(0, chestFile.getName().length() - 6);
 
 				final BufferedReader in = new BufferedReader(new FileReader(chestFile));

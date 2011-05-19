@@ -10,7 +10,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
+
 import net.minecraft.server.EntityPlayer;
+import net.minecraft.server.Packet100OpenWindow;
+
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
@@ -128,6 +131,8 @@ public class AlphaChestPlugin extends JavaPlugin {
 			return performReloadChestsCommand(sender, args);
 		else if (name.equalsIgnoreCase("clearchest"))
 			return performClearChestCommand(sender, args);
+		else if (name.equalsIgnoreCase("workbench"))
+			return performWorkbenchCommand(sender, args);
 		else
 			return false;
 	}
@@ -204,6 +209,23 @@ public class AlphaChestPlugin extends JavaPlugin {
 				}
 				return true;
 			}
+		}
+		return false;
+	}
+
+	private boolean performWorkbenchCommand(CommandSender sender, String[] args) {
+		if (sender instanceof Player) {
+			final Player player = (Player) sender;
+			if (hasPermission(player, "ac.workbench")) {
+				final EntityPlayer eh = ((CraftPlayer) sender).getHandle();
+				
+				final int bI = 1; // seems like the window ID - should be safe to use a static one
+		        eh.netServerHandler.sendPacket(new Packet100OpenWindow(bI, 1, "Virtual Crafting", 9));
+		        eh.activeContainer = new AlphaWorkbench(eh, bI);
+			} else {
+				Teller.tell(player, Type.Warning, "You\'re not allowed to use this command.");
+			}
+			return true;
 		}
 		return false;
 	}

@@ -24,3 +24,8 @@ commands:
         description: Reloads the seperate configuration file if in-use.
         usage: |
               /<command> - Reloads the seperate configuration file if in-use.
+    workbench:
+        aliases: [craft, craftbox, craftingbox]
+        description: Opens a virtual workbench
+        usage: |
+              /<command>

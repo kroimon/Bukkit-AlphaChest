@@ -1,11 +1,15 @@
 package com.mast3rplan.alphachest;
 
 import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
+import org.bukkit.command.CommandSender;
 
 public class acTeller {
 
-	public static void tell(Player player, acTellerType type, String message) {
+	public enum Type {
+		Info, Success, Warning, Error, Misc;
+	}
+
+	public static void tell(CommandSender sender, Type type, String message) {
 		ChatColor color = ChatColor.WHITE;
 		switch (type) {
 		case Info:
@@ -24,7 +28,7 @@ public class acTeller {
 			color = ChatColor.DARK_BLUE;
 		}
 
-		player.sendMessage(ChatColor.BLACK + "[" + ChatColor.GRAY + "Alpha Chest" + ChatColor.BLACK + "] " + color + message);
+		sender.sendMessage(ChatColor.BLACK + "[" + ChatColor.GRAY + "Alpha Chest" + ChatColor.BLACK + "] " + color + message);
 	}
 
 }

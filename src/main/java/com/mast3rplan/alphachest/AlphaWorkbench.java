@@ -7,9 +7,9 @@ import net.minecraft.server.ICrafting;
 
 public class AlphaWorkbench extends ContainerWorkbench {
 
-	public AlphaWorkbench(EntityPlayer player, int bI) {
+	public AlphaWorkbench(EntityPlayer player, int windowId) {
 		super(player.inventory, null, 0, 0, 0);
-		super.f = bI;
+        super.windowId = windowId;
 		super.a((ICrafting) player);
 	}
 

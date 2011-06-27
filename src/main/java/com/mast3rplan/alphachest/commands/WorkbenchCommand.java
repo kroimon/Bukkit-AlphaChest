@@ -28,9 +28,9 @@ public class WorkbenchCommand implements CommandExecutor {
 			if (plugin.hasPermission(player, "ac.workbench")) {
 				final EntityPlayer eh = ((CraftPlayer) sender).getHandle();
 				
-				final int bI = 1; // seems like the window ID - should be safe to use a static one
-		        eh.netServerHandler.sendPacket(new Packet100OpenWindow(bI, 1, "Virtual Crafting", 9));
-		        eh.activeContainer = new AlphaWorkbench(eh, bI);
+				final int windowId = 1; // should be safe to use a static window ID
+		        eh.netServerHandler.sendPacket(new Packet100OpenWindow(windowId, 1, "Virtual Crafting", 9));
+		        eh.activeContainer = new AlphaWorkbench(eh, windowId);
 			} else {
 				Teller.tell(player, Type.Warning, "You\'re not allowed to use this command.");
 			}

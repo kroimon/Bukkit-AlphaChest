@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.logging.Logger;
 import net.minecraft.server.InventoryLargeChest;
 import net.minecraft.server.ItemStack;
+import net.minecraft.server.TileEntityChest;
 
 public class AlphaChestManager {
 	private static Logger log = Logger.getLogger("Minecraft");
@@ -33,7 +34,7 @@ public class AlphaChestManager {
 	}
 
 	private InventoryLargeChest addChest(String playerName) {
-		InventoryLargeChest chest = new InventoryLargeChest(playerName + "\'s Virtual Chest", new AlphaChest(), new AlphaChest());
+		InventoryLargeChest chest = new InventoryLargeChest("Virtual Chest", new TileEntityChest(), new TileEntityChest());
 		chests.put(playerName.toLowerCase(), chest);
 		return chest;
 	}
@@ -55,7 +56,7 @@ public class AlphaChestManager {
 		};
 		for (File chestFile : dataFolder.listFiles(filter)) {
 			try {
-				final InventoryLargeChest chest = new InventoryLargeChest("Large chest", new AlphaChest(), new AlphaChest());
+				final InventoryLargeChest chest = new InventoryLargeChest("Virtual Chest", new TileEntityChest(), new TileEntityChest());
 				final String playerName = chestFile.getName().substring(0, chestFile.getName().length() - 6);
 
 				final BufferedReader in = new BufferedReader(new FileReader(chestFile));
@@ -109,7 +110,7 @@ public class AlphaChestManager {
 
 				for (ItemStack stack : chest.getContents()) {
 					if (stack != null)
-						out.write(stack.id + ":" + stack.count + ":" + stack.damage + "\r\n");
+						out.write(stack.id + ":" + stack.count + ":" + stack.getData() + "\r\n");
 					else
 						out.write("0:0:0\r\n");
 				}

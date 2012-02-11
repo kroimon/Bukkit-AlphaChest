@@ -11,13 +11,29 @@ commands:
         usage: |
               /<command> - Opens your private chest.
               /<command> [player] - Opens someone else's chest.
+        permission: ac.chest
     clearchest:
         description: Clears the contents of a chest.
         usage: |
               /<command> - Clears your private chest.
               /<command> [player] - Clears someone else's chest.
+        permission: ac.chest
     savechests:
         description: Saves the chests to disk.
+        permission: ac.save
     workbench:
         aliases: [craft, craftbox, craftingbox]
         description: Opens a virtual workbench.
+        permission: ac.workbench
+
+permissions:
+    ac.admin:
+        description: Allows to open and clear someone else's chest.
+        default: op
+    ac.chest:
+        description: Gives access to the virtual chest.
+    ac.save:
+        description: Allows to save all virtual chests.
+        default: op
+    ac.workbench:
+        description: Gives access to the virtual workbench.

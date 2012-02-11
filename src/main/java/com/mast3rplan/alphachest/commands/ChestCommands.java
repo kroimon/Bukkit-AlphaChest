@@ -9,17 +9,14 @@ import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
 import com.mast3rplan.alphachest.AlphaChestManager;
-import com.mast3rplan.alphachest.AlphaChestPlugin;
 import com.mast3rplan.alphachest.Teller;
 import com.mast3rplan.alphachest.Teller.Type;
 
 public class ChestCommands implements CommandExecutor {
 
-	private final AlphaChestPlugin plugin;
 	private final AlphaChestManager chestManager;
 
-	public ChestCommands(AlphaChestPlugin plugin, AlphaChestManager chestManager) {
-		this.plugin = plugin;
+	public ChestCommands(AlphaChestManager chestManager) {
 		this.chestManager = chestManager;
 	}
 
@@ -41,7 +38,7 @@ public class ChestCommands implements CommandExecutor {
 			Player player = (Player) sender;
 			EntityPlayer eh;
 			if (args.length == 1) {
-				if (plugin.hasPermission(player, "ac.admin")) {
+				if (sender.hasPermission("ac.admin")) {
 					eh = ((CraftPlayer) sender).getHandle();
 					eh.a(chestManager.getChest(args[0]));
 				} else {
@@ -50,7 +47,7 @@ public class ChestCommands implements CommandExecutor {
 				return true;
 	
 			} else if (args.length == 0) {
-				if (plugin.hasPermission(player, "ac.chest")) {
+				if (sender.hasPermission("ac.chest")) {
 					eh = ((CraftPlayer) sender).getHandle();
 					eh.a(chestManager.getChest(player.getName()));
 				} else {
@@ -64,7 +61,7 @@ public class ChestCommands implements CommandExecutor {
 
 	private boolean performClearChestCommand(CommandSender sender, String[] args) {
 		if (args.length >= 1) {
-			if ((sender instanceof Player) && !plugin.hasPermission((Player) sender, "ac.admin")) {
+			if (!sender.hasPermission("ac.admin")) {
 				Teller.tell(sender, Type.Warning, "You\'re not allowed to clear other user's chests.");
 				return true;
 			}
@@ -73,12 +70,11 @@ public class ChestCommands implements CommandExecutor {
 			return true;
 		} else {
 			if (sender instanceof Player) {
-				final Player player = (Player) sender;
-				if (!plugin.hasPermission(player, "ac.chest")) {
-					Teller.tell(player, Type.Warning, "You\'re not allowed to use this command.");
+				if (!sender.hasPermission("ac.chest")) {
+					Teller.tell(sender, Type.Warning, "You\'re not allowed to use this command.");
 				} else {
-					chestManager.removeChest(player.getName());
-					Teller.tell(player, Type.Success, "Successfully cleared your chest.");
+					chestManager.removeChest(sender.getName());
+					Teller.tell(sender, Type.Success, "Successfully cleared your chest.");
 				}
 				return true;
 			}
@@ -87,13 +83,10 @@ public class ChestCommands implements CommandExecutor {
 	}
 
 	private boolean performSaveChestsCommand(CommandSender sender, String[] args) {
-		if (sender instanceof Player) {
-			if (!plugin.hasPermission((Player) sender, "ac.save")) {
-				Teller.tell(sender, Type.Warning, "You\'re not allowed to use this command.");
-				return true;
-			}
+		if (!sender.hasPermission("ac.save")) {
+			Teller.tell(sender, Type.Warning, "You\'re not allowed to use this command.");
+			return true;
 		}
-
 		chestManager.save();
 		Teller.tell(sender, Type.Success, "Saved all chests.");
 		return true;

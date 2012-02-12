@@ -16,7 +16,7 @@ public class WorkbenchCommand implements CommandExecutor {
 
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 		if (sender instanceof CraftPlayer) {
-			if (sender.hasPermission("ac.workbench")) {
+			if (sender.hasPermission("alphachest.workbench")) {
 				final EntityPlayer eh = ((CraftPlayer) sender).getHandle();
 				
 				final int windowId = 1; // should be safe to use a static window ID

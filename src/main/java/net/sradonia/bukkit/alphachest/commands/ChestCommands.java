@@ -38,7 +38,7 @@ public class ChestCommands implements CommandExecutor {
 			Player player = (Player) sender;
 			EntityPlayer eh;
 			if (args.length == 1) {
-				if (sender.hasPermission("ac.admin")) {
+				if (sender.hasPermission("alphachest.admin")) {
 					eh = ((CraftPlayer) sender).getHandle();
 					eh.a(chestManager.getChest(args[0]));
 				} else {
@@ -47,7 +47,7 @@ public class ChestCommands implements CommandExecutor {
 				return true;
 	
 			} else if (args.length == 0) {
-				if (sender.hasPermission("ac.chest")) {
+				if (sender.hasPermission("alphachest.chest")) {
 					eh = ((CraftPlayer) sender).getHandle();
 					eh.a(chestManager.getChest(player.getName()));
 				} else {
@@ -61,7 +61,7 @@ public class ChestCommands implements CommandExecutor {
 
 	private boolean performClearChestCommand(CommandSender sender, String[] args) {
 		if (args.length >= 1) {
-			if (!sender.hasPermission("ac.admin")) {
+			if (!sender.hasPermission("alphachest.admin")) {
 				Teller.tell(sender, Type.Warning, "You\'re not allowed to clear other user's chests.");
 				return true;
 			}
@@ -70,7 +70,7 @@ public class ChestCommands implements CommandExecutor {
 			return true;
 		} else {
 			if (sender instanceof Player) {
-				if (!sender.hasPermission("ac.chest")) {
+				if (!sender.hasPermission("alphachest.chest")) {
 					Teller.tell(sender, Type.Warning, "You\'re not allowed to use this command.");
 				} else {
 					chestManager.removeChest(sender.getName());
@@ -83,7 +83,7 @@ public class ChestCommands implements CommandExecutor {
 	}
 
 	private boolean performSaveChestsCommand(CommandSender sender, String[] args) {
-		if (!sender.hasPermission("ac.save")) {
+		if (!sender.hasPermission("alphachest.save")) {
 			Teller.tell(sender, Type.Warning, "You\'re not allowed to use this command.");
 			return true;
 		}

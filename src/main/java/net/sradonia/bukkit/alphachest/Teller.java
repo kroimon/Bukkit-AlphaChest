@@ -28,7 +28,7 @@ public class Teller {
 			color = ChatColor.DARK_BLUE;
 		}
 
-		sender.sendMessage(ChatColor.BLACK + "[" + ChatColor.GRAY + "Alpha Chest" + ChatColor.BLACK + "] " + color + message);
+		sender.sendMessage(ChatColor.BLACK + "[" + ChatColor.GRAY + "AlphaChest" + ChatColor.BLACK + "] " + color + message);
 	}
 
 }

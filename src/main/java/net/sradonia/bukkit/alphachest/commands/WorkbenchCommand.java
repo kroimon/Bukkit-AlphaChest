@@ -23,7 +23,7 @@ public class WorkbenchCommand implements CommandExecutor {
 		        eh.netServerHandler.sendPacket(new Packet100OpenWindow(windowId, 1, "Virtual Crafting", 9));
 		        eh.activeContainer = new AlphaWorkbench(eh, windowId);
 			} else {
-				Teller.tell(sender, Type.Warning, "You\'re not allowed to use this command.");
+				Teller.tell(sender, Type.Error, "You're not allowed to use this command.");
 			}
 			return true;
 		}

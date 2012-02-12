@@ -2,12 +2,7 @@ package com.mast3rplan.alphachest;
 
 import com.mast3rplan.alphachest.commands.ChestCommands;
 import com.mast3rplan.alphachest.commands.WorkbenchCommand;
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Logger;
 
 import org.bukkit.plugin.PluginDescriptionFile;

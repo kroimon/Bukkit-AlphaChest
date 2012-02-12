@@ -1,4 +1,4 @@
-package com.mast3rplan.alphachest;
+package net.sradonia.bukkit.alphachest;
 
 import net.minecraft.server.ContainerWorkbench;
 import net.minecraft.server.EntityHuman;

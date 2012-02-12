@@ -1,16 +1,16 @@
-package com.mast3rplan.alphachest.commands;
+package net.sradonia.bukkit.alphachest.commands;
 
 import net.minecraft.server.EntityPlayer;
 import net.minecraft.server.Packet100OpenWindow;
+import net.sradonia.bukkit.alphachest.AlphaWorkbench;
+import net.sradonia.bukkit.alphachest.Teller;
+import net.sradonia.bukkit.alphachest.Teller.Type;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 
-import com.mast3rplan.alphachest.AlphaWorkbench;
-import com.mast3rplan.alphachest.Teller;
-import com.mast3rplan.alphachest.Teller.Type;
 
 public class WorkbenchCommand implements CommandExecutor {
 

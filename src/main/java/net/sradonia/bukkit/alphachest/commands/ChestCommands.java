@@ -1,6 +1,9 @@
-package com.mast3rplan.alphachest.commands;
+package net.sradonia.bukkit.alphachest.commands;
 
 import net.minecraft.server.EntityPlayer;
+import net.sradonia.bukkit.alphachest.AlphaChestManager;
+import net.sradonia.bukkit.alphachest.Teller;
+import net.sradonia.bukkit.alphachest.Teller.Type;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -8,9 +11,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
-import com.mast3rplan.alphachest.AlphaChestManager;
-import com.mast3rplan.alphachest.Teller;
-import com.mast3rplan.alphachest.Teller.Type;
 
 public class ChestCommands implements CommandExecutor {
 

@@ -1,9 +1,10 @@
-package com.mast3rplan.alphachest;
+package net.sradonia.bukkit.alphachest;
 
-import com.mast3rplan.alphachest.commands.ChestCommands;
-import com.mast3rplan.alphachest.commands.WorkbenchCommand;
 import java.io.File;
 import java.util.logging.Logger;
+
+import net.sradonia.bukkit.alphachest.commands.ChestCommands;
+import net.sradonia.bukkit.alphachest.commands.WorkbenchCommand;
 
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;

@@ -1,4 +1,4 @@
-package com.mast3rplan.alphachest;
+package net.sradonia.bukkit.alphachest;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;

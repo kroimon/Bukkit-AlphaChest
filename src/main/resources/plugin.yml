@@ -1,7 +1,7 @@
 name: ${project.name}
-main: com.mast3rplan.alphachest.AlphaChestPlugin
+main: net.sradonia.bukkit.alphachest.AlphaChestPlugin
 version: ${project.version}
-author: Mast3rPlan
+author: kroimon
 description: >
              Plugin that allows you to have virtual private chests.
 

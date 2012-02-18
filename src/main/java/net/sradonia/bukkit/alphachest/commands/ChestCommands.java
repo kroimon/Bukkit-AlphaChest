@@ -1,7 +1,7 @@
 package net.sradonia.bukkit.alphachest.commands;
 
 import net.minecraft.server.EntityPlayer;
-import net.sradonia.bukkit.alphachest.AlphaChestManager;
+import net.sradonia.bukkit.alphachest.VirtualChestManager;
 import net.sradonia.bukkit.alphachest.Teller;
 import net.sradonia.bukkit.alphachest.Teller.Type;
 
@@ -13,9 +13,9 @@ import org.bukkit.entity.Player;
 
 public class ChestCommands implements CommandExecutor {
 
-	private final AlphaChestManager chestManager;
+	private final VirtualChestManager chestManager;
 
-	public ChestCommands(AlphaChestManager chestManager) {
+	public ChestCommands(VirtualChestManager chestManager) {
 		this.chestManager = chestManager;
 	}
 

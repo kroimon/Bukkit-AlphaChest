@@ -7,36 +7,30 @@ import java.util.logging.Logger;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
-import net.minecraft.server.InventoryLargeChest;
 import net.minecraft.server.ItemStack;
 import net.minecraft.server.NBTBase;
 import net.minecraft.server.NBTTagCompound;
 import net.minecraft.server.NBTTagList;
-import net.minecraft.server.TileEntityChest;
 
-public class AlphaChestManager {
+public class VirtualChestManager {
 	private static Logger log = Logger.getLogger("Minecraft");
 
-	private final HashMap<String, InventoryLargeChest> chests;
+	private final HashMap<String, VirtualChest> chests;
 	private final File dataFolder;
 
-	public AlphaChestManager(File dataFolder) {
+	public VirtualChestManager(File dataFolder) {
 		this.dataFolder = dataFolder;
-		this.chests = new HashMap<String, InventoryLargeChest>();
+		this.chests = new HashMap<String, VirtualChest>();
 	}
 
-	public InventoryLargeChest getChest(String playerName) {
-		InventoryLargeChest chest = chests.get(playerName.toLowerCase());
+	public VirtualChest getChest(String playerName) {
+		VirtualChest chest = chests.get(playerName.toLowerCase());
 
-		if (chest == null)
-			chest = addChest(playerName);
+		if (chest == null) {
+			chest = new VirtualChest();
+			chests.put(playerName.toLowerCase(), chest);
+		}
 
-		return chest;
-	}
-
-	private InventoryLargeChest addChest(String playerName) {
-		InventoryLargeChest chest = new InventoryLargeChest("Virtual Chest", new TileEntityChest(), new TileEntityChest());
-		chests.put(playerName.toLowerCase(), chest);
 		return chest;
 	}
 
@@ -68,8 +62,8 @@ public class AlphaChestManager {
 		log.info("[AlphaChest] loaded " + chests.size() + " chests");
 	}
 
-	private InventoryLargeChest loadChestFromTextfile(File chestFile) throws IOException {
-		final InventoryLargeChest chest = new InventoryLargeChest("Virtual Chest", new TileEntityChest(), new TileEntityChest());
+	private VirtualChest loadChestFromTextfile(File chestFile) throws IOException {
+		final VirtualChest chest = new VirtualChest();
 
 		final BufferedReader in = new BufferedReader(new FileReader(chestFile));
 
@@ -97,8 +91,8 @@ public class AlphaChestManager {
 		return chest;
 	}
 
-	private InventoryLargeChest loadChestFromNBT(File chestFile) throws IOException {
-		final InventoryLargeChest chest = new InventoryLargeChest("Virtual Chest", new TileEntityChest(), new TileEntityChest());
+	private VirtualChest loadChestFromNBT(File chestFile) throws IOException {
+		final VirtualChest chest = new VirtualChest();
 
 		final DataInputStream in = new DataInputStream(new GZIPInputStream(new FileInputStream(chestFile)));
 		final NBTTagCompound nbt = (NBTTagCompound) NBTBase.b(in);
@@ -124,9 +118,9 @@ public class AlphaChestManager {
 
 		dataFolder.mkdirs();
 
-		for (Entry<String, InventoryLargeChest> entry : chests.entrySet()) {
+		for (Entry<String, VirtualChest> entry : chests.entrySet()) {
 			final String playerName = entry.getKey();
-			final InventoryLargeChest chest = entry.getValue();
+			final VirtualChest chest = entry.getValue();
 
 			try {
 				// Delete the old plaintext file if it exists
@@ -146,7 +140,7 @@ public class AlphaChestManager {
 		log.info("[AlphaChest] saved " + savedChests + " chests");
 	}
 
-	private void saveChestToNBT(InventoryLargeChest chest, File chestFile) throws IOException {
+	private void saveChestToNBT(VirtualChest chest, File chestFile) throws IOException {
 		final DataOutputStream out = new DataOutputStream(new GZIPOutputStream(new FileOutputStream(chestFile)));
 
 		NBTTagList items = new NBTTagList();

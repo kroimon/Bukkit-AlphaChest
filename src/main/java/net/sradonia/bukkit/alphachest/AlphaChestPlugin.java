@@ -12,11 +12,11 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class AlphaChestPlugin extends JavaPlugin {
 	private static final Logger log = Logger.getLogger("Minecraft");
 
-	private AlphaChestManager chestManager;
+	private VirtualChestManager chestManager;
 
 	public void onEnable() {
 		// Initialize
-		chestManager = new AlphaChestManager(new File(getDataFolder(), "chests"));
+		chestManager = new VirtualChestManager(new File(getDataFolder(), "chests"));
 		chestManager.load();
 
 		// Set command executors

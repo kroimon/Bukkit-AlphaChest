@@ -2,7 +2,7 @@ package net.sradonia.bukkit.alphachest.commands;
 
 import net.minecraft.server.EntityPlayer;
 import net.minecraft.server.Packet100OpenWindow;
-import net.sradonia.bukkit.alphachest.AlphaWorkbench;
+import net.sradonia.bukkit.alphachest.VirtualWorkbench;
 import net.sradonia.bukkit.alphachest.Teller;
 import net.sradonia.bukkit.alphachest.Teller.Type;
 
@@ -21,7 +21,7 @@ public class WorkbenchCommand implements CommandExecutor {
 				
 				final int windowId = 1; // should be safe to use a static window ID
 		        eh.netServerHandler.sendPacket(new Packet100OpenWindow(windowId, 1, "Virtual Crafting", 9));
-		        eh.activeContainer = new AlphaWorkbench(eh, windowId);
+		        eh.activeContainer = new VirtualWorkbench(eh, windowId);
 			} else {
 				Teller.tell(sender, Type.Error, "You're not allowed to use this command.");
 			}

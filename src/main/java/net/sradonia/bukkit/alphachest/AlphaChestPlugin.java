@@ -30,11 +30,11 @@ public class AlphaChestPlugin extends JavaPlugin {
 		getCommand("workbench").setExecutor(new WorkbenchCommand());
 
 		// Schedule auto-saving
-		int autosaveInterval = getConfig().getInt("autosave", 10) * 3000;
+		int autosaveInterval = getConfig().getInt("autosave") * 3000;
 		getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
 			public void run() {
 				int savedChests = chestManager.save(false);
-				if (savedChests > 0)
+				if (savedChests > 0 && !getConfig().getBoolean("silentAutosave"))
 					log.info("[" + pdf.getName() + "] auto-saved " + savedChests + " chests");
 			}
 		}, autosaveInterval, autosaveInterval);

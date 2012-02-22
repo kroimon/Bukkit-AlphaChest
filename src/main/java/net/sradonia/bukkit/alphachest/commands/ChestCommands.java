@@ -1,6 +1,7 @@
 package net.sradonia.bukkit.alphachest.commands;
 
 import net.minecraft.server.EntityPlayer;
+import net.sradonia.bukkit.alphachest.VirtualChest;
 import net.sradonia.bukkit.alphachest.VirtualChestManager;
 import net.sradonia.bukkit.alphachest.Teller;
 import net.sradonia.bukkit.alphachest.Teller.Type;
@@ -33,21 +34,26 @@ public class ChestCommands implements CommandExecutor {
 
 	private boolean performChestCommand(CommandSender sender, String[] args) {
 		if (sender instanceof Player) {
-			Player player = (Player) sender;
 			if (args.length == 0) {
 				if (sender.hasPermission("alphachest.chest")) {
+					VirtualChest chest = chestManager.getChest(sender.getName());
+					chest.setChanged(true); // we currently can't rely on any other way to detect changes.
+
 					EntityPlayer eh = ((CraftPlayer) sender).getHandle();
-					eh.a(chestManager.getChest(player.getName()));
+					eh.a(chest);
 				} else {
-					Teller.tell(player, Type.Error, "You're not allowed to use this command.");
+					Teller.tell(sender, Type.Error, "You're not allowed to use this command.");
 				}
 				return true;
 			} else if (args.length == 1) {
 				if (sender.hasPermission("alphachest.admin")) {
+					VirtualChest chest = chestManager.getChest(args[0]);
+					chest.setChanged(true); // we currently can't rely on any other way to detect changes.
+
 					EntityPlayer eh = ((CraftPlayer) sender).getHandle();
-					eh.a(chestManager.getChest(args[0]));
+					eh.a(chest);
 				} else {
-					Teller.tell(player, Type.Error, "You're not allowed to open other user's chests.");
+					Teller.tell(sender, Type.Error, "You're not allowed to open other user's chests.");
 				}
 				return true;
 
@@ -84,8 +90,8 @@ public class ChestCommands implements CommandExecutor {
 
 	private boolean performSaveChestsCommand(CommandSender sender, String[] args) {
 		if (sender.hasPermission("alphachest.save")) {
-			chestManager.save();
-			Teller.tell(sender, Type.Success, "Saved all chests.");
+			int savedChests = chestManager.save(true);
+			Teller.tell(sender, Type.Success, "Saved " + savedChests + " chests.");
 		} else {
 			Teller.tell(sender, Type.Error, "You're not allowed to use this command.");
 		}

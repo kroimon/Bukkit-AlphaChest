@@ -3,7 +3,6 @@ package net.sradonia.bukkit.alphachest;
 import java.io.*;
 import java.util.HashMap;
 import java.util.Map.Entry;
-import java.util.logging.Logger;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
@@ -13,8 +12,6 @@ import net.minecraft.server.NBTTagCompound;
 import net.minecraft.server.NBTTagList;
 
 public class VirtualChestManager {
-	private static Logger log = Logger.getLogger("Minecraft");
-
 	private final HashMap<String, VirtualChest> chests;
 	private final File dataFolder;
 
@@ -38,7 +35,11 @@ public class VirtualChestManager {
 		chests.remove(playerName.toLowerCase());
 	}
 
-	public void load() {
+	public int getChestCount() {
+		return chests.size();
+	}
+
+	public int load() {
 		chests.clear();
 
 		dataFolder.mkdirs();
@@ -59,7 +60,7 @@ public class VirtualChestManager {
 			}
 		}
 
-		log.info("[AlphaChest] loaded " + chests.size() + " chests");
+		return chests.size();
 	}
 
 	private VirtualChest loadChestFromTextfile(File chestFile) throws IOException {
@@ -88,6 +89,7 @@ public class VirtualChestManager {
 
 		in.close();
 
+		chest.setChanged(false);
 		return chest;
 	}
 
@@ -110,10 +112,11 @@ public class VirtualChestManager {
 			}
 		}
 
+		chest.setChanged(false);
 		return chest;
 	}
 
-	public void save() {
+	public int save(boolean saveAll) {
 		int savedChests = 0;
 
 		dataFolder.mkdirs();
@@ -122,22 +125,25 @@ public class VirtualChestManager {
 			final String playerName = entry.getKey();
 			final VirtualChest chest = entry.getValue();
 
-			try {
-				// Delete the old plaintext file if it exists
-				final File textFile = new File(dataFolder, playerName + ".chest");
-				textFile.delete();
-
-				// Write the new chest file in NBT format
-				final File nbtFile = new File(dataFolder, playerName + ".chest.nbt");
-				saveChestToNBT(chest, nbtFile);
-
-				savedChests++;
-			} catch (IOException e) {
-				e.printStackTrace();
+			if (saveAll || chest.isChanged()) {
+				try {
+					// Delete the old plaintext file if it exists
+					final File textFile = new File(dataFolder, playerName + ".chest");
+					textFile.delete();
+	
+					// Write the new chest file in NBT format
+					final File nbtFile = new File(dataFolder, playerName + ".chest.nbt");
+					saveChestToNBT(chest, nbtFile);
+					chest.setChanged(false);
+	
+					savedChests++;
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 			}
 		}
 
-		log.info("[AlphaChest] saved " + savedChests + " chests");
+		return savedChests;
 	}
 
 	private void saveChestToNBT(VirtualChest chest, File chestFile) throws IOException {

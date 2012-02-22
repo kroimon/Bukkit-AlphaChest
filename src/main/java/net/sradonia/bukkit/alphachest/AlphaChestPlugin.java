@@ -15,9 +15,12 @@ public class AlphaChestPlugin extends JavaPlugin {
 	private VirtualChestManager chestManager;
 
 	public void onEnable() {
+		final PluginDescriptionFile pdf = getDescription();
+
 		// Initialize
 		chestManager = new VirtualChestManager(new File(getDataFolder(), "chests"));
-		chestManager.load();
+		int chestCount = chestManager.load();
+		log.info("[" + pdf.getName() + "] loaded " + chestCount + " chests");
 
 		// Set command executors
 		final ChestCommands chestCommands = new ChestCommands(chestManager);
@@ -30,21 +33,23 @@ public class AlphaChestPlugin extends JavaPlugin {
 		int autosaveInterval = getConfig().getInt("autosave", 10) * 3000;
 		getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
 			public void run() {
-				chestManager.save();
-				log.fine("[AlphaChest] auto-saved chests");
+				int savedChests = chestManager.save(false);
+				if (savedChests > 0)
+					log.info("[" + pdf.getName() + "] auto-saved " + savedChests + " chests");
 			}
 		}, autosaveInterval, autosaveInterval);
 
 		// Success
-		PluginDescriptionFile pdfFile = getDescription();
-		log.info("[" + pdfFile.getName() + "] version [" + pdfFile.getVersion() + "] enabled");
+		log.info("[" + pdf.getName() + "] version [" + pdf.getVersion() + "] enabled");
 	}
 
 	public void onDisable() {
-		chestManager.save();
+		PluginDescriptionFile pdf = getDescription();
 
-		PluginDescriptionFile pdfFile = getDescription();
-		log.info("[" + pdfFile.getName() + "] version [" + pdfFile.getVersion() + "] disabled");
+		int savedChests = chestManager.save(false);
+
+		log.info("[" + pdf.getName() + "] saved " + savedChests + " chests");
+		log.info("[" + pdf.getName() + "] version [" + pdf.getVersion() + "] disabled");
 	}
 
 }

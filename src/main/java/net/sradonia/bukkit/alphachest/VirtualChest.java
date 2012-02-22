@@ -19,6 +19,12 @@ public class VirtualChest extends InventoryLargeChest {
 		changed = true;
 	}
 
+	@Override
+	public ItemStack splitStack(int i, int j) {
+		changed = true;
+		return super.splitStack(i, j);
+	}
+
 	public boolean isChanged() {
 		return changed;
 	}

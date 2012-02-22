@@ -37,8 +37,6 @@ public class ChestCommands implements CommandExecutor {
 			if (args.length == 0) {
 				if (sender.hasPermission("alphachest.chest")) {
 					VirtualChest chest = chestManager.getChest(sender.getName());
-					chest.setChanged(true); // we currently can't rely on any other way to detect changes.
-
 					EntityPlayer eh = ((CraftPlayer) sender).getHandle();
 					eh.a(chest);
 				} else {
@@ -48,8 +46,6 @@ public class ChestCommands implements CommandExecutor {
 			} else if (args.length == 1) {
 				if (sender.hasPermission("alphachest.admin")) {
 					VirtualChest chest = chestManager.getChest(args[0]);
-					chest.setChanged(true); // we currently can't rely on any other way to detect changes.
-
 					EntityPlayer eh = ((CraftPlayer) sender).getHandle();
 					eh.a(chest);
 				} else {

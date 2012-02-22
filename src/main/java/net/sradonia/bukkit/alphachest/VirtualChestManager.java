@@ -2,6 +2,7 @@ package net.sradonia.bukkit.alphachest;
 
 import java.io.*;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
@@ -32,7 +33,8 @@ public class VirtualChestManager {
 	}
 
 	public void removeChest(String playerName) {
-		chests.remove(playerName.toLowerCase());
+		// Put a null to the map so we remember to delete the file when saving!
+		chests.put(playerName.toLowerCase(), null);
 	}
 
 	public int getChestCount() {
@@ -47,11 +49,11 @@ public class VirtualChestManager {
 			try {
 				String chestFileName = chestFile.getName();
 				if (chestFileName.endsWith(".chest.nbt")) {
-					// Old plaintext file format
+					// New NBT file format
 					String playerName = chestFileName.substring(0, chestFile.getName().length() - 10);
 					chests.put(playerName.toLowerCase(), loadChestFromNBT(chestFile));
 				} else if (chestFileName.endsWith(".chest")) {
-					// New NBT file format
+					// Old plaintext file format
 					String playerName = chestFileName.substring(0, chestFile.getName().length() - 6);
 					chests.put(playerName.toLowerCase(), loadChestFromTextfile(chestFile));
 				}
@@ -121,21 +123,27 @@ public class VirtualChestManager {
 
 		dataFolder.mkdirs();
 
-		for (Entry<String, VirtualChest> entry : chests.entrySet()) {
+		Iterator<Entry<String, VirtualChest>> chestIterator = chests.entrySet().iterator();
+		while (chestIterator.hasNext()) {
+			final Entry<String, VirtualChest> entry = chestIterator.next();
 			final String playerName = entry.getKey();
 			final VirtualChest chest = entry.getValue();
 
-			if (saveAll || chest.isChanged()) {
+			// Delete the old plaintext file if it exists
+			new File(dataFolder, playerName + ".chest").delete();
+
+			if (chest == null) {
+				// Chest got removed, so we have to delete the old file.
+				new File(dataFolder, playerName + ".chest.nbt").delete();
+				chestIterator.remove();
+
+			} else if (saveAll || chest.isChanged()) {
 				try {
-					// Delete the old plaintext file if it exists
-					final File textFile = new File(dataFolder, playerName + ".chest");
-					textFile.delete();
-	
 					// Write the new chest file in NBT format
 					final File nbtFile = new File(dataFolder, playerName + ".chest.nbt");
 					saveChestToNBT(chest, nbtFile);
 					chest.setChanged(false);
-	
+
 					savedChests++;
 				} catch (IOException e) {
 					e.printStackTrace();

@@ -33,7 +33,7 @@ public class AlphaChestPlugin extends JavaPlugin {
 		getCommand("workbench").setExecutor(new WorkbenchCommand());
 
 		// Schedule auto-saving
-		int autosaveInterval = getConfig().getInt("autosave") * 3000;
+		int autosaveInterval = getConfig().getInt("autosave") * 1200;
 		getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
 			public void run() {
 				int savedChests = chestManager.save(false);

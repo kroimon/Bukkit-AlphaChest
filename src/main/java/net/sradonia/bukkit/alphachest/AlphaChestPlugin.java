@@ -17,6 +17,9 @@ public class AlphaChestPlugin extends JavaPlugin {
 	public void onEnable() {
 		final PluginDescriptionFile pdf = getDescription();
 
+		// Save default config.yml
+		saveDefaultConfig();
+
 		// Initialize
 		chestManager = new VirtualChestManager(new File(getDataFolder(), "chests"));
 		int chestCount = chestManager.load();

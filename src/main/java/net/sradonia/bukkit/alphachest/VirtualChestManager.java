@@ -104,7 +104,7 @@ public class VirtualChestManager {
 		for (int i = 0; i < items.size(); i++) {
 			NBTTagCompound item = (NBTTagCompound) items.get(i);
 			byte slot = item.getByte("Slot");
-			if (slot > 0 && slot < chestSize) {
+			if (slot >= 0 && slot < chestSize) {
 				ItemStack itemStack = ItemStack.a(item);
 				chest.setItem(slot, itemStack);
 			}

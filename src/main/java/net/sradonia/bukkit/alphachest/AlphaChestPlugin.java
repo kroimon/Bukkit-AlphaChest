@@ -9,11 +9,13 @@ import net.sradonia.bukkit.alphachest.commands.WorkbenchCommand;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class AlphaChestPlugin extends JavaPlugin {
-	private final Logger log = getLogger();
+	private Logger log;
 
 	private VirtualChestManager chestManager;
 
 	public void onEnable() {
+		log = getLogger();
+
 		// Save default config.yml
 		saveDefaultConfig();
 

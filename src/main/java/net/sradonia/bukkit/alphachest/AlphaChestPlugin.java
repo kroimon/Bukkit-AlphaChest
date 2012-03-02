@@ -17,7 +17,8 @@ public class AlphaChestPlugin extends JavaPlugin {
 		log = getLogger();
 
 		// Save default config.yml
-		saveDefaultConfig();
+		if (!new File(getDataFolder(), "config.yml").exists())
+			saveDefaultConfig();
 
 		// Initialize
 		chestManager = new VirtualChestManager(this, new File(getDataFolder(), "chests"));

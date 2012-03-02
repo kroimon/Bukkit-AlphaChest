@@ -4,6 +4,7 @@ import java.io.*;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map.Entry;
+import java.util.logging.Level;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
@@ -13,10 +14,12 @@ import net.minecraft.server.NBTTagCompound;
 import net.minecraft.server.NBTTagList;
 
 public class VirtualChestManager {
+	private final AlphaChestPlugin plugin;
 	private final HashMap<String, VirtualChest> chests;
 	private final File dataFolder;
 
-	public VirtualChestManager(File dataFolder) {
+	public VirtualChestManager(AlphaChestPlugin plugin, File dataFolder) {
+		this.plugin = plugin;
 		this.dataFolder = dataFolder;
 		this.chests = new HashMap<String, VirtualChest>();
 	}
@@ -46,8 +49,8 @@ public class VirtualChestManager {
 
 		dataFolder.mkdirs();
 		for (File chestFile : dataFolder.listFiles()) {
+			String chestFileName = chestFile.getName();
 			try {
-				String chestFileName = chestFile.getName();
 				if (chestFileName.endsWith(".chest.nbt")) {
 					// New NBT file format
 					String playerName = chestFileName.substring(0, chestFile.getName().length() - 10);
@@ -58,7 +61,7 @@ public class VirtualChestManager {
 					chests.put(playerName.toLowerCase(), loadChestFromTextfile(chestFile));
 				}
 			} catch (IOException e) {
-				e.printStackTrace();
+				plugin.getLogger().log(Level.WARNING, "Couldn't load chest file: " + chestFileName, e);
 			}
 		}
 

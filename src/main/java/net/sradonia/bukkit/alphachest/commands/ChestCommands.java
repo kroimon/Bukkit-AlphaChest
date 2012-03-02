@@ -33,12 +33,12 @@ public class ChestCommands implements CommandExecutor {
 	}
 
 	private boolean performChestCommand(CommandSender sender, String[] args) {
-		if (sender instanceof Player) {
+		if (sender instanceof CraftPlayer) {
 			if (args.length == 0) {
 				if (sender.hasPermission("alphachest.chest")) {
 					VirtualChest chest = chestManager.getChest(sender.getName());
-					EntityPlayer eh = ((CraftPlayer) sender).getHandle();
-					eh.a(chest);
+					EntityPlayer player = ((CraftPlayer) sender).getHandle();
+					player.openContainer(chest);
 				} else {
 					Teller.tell(sender, Type.Error, "You're not allowed to use this command.");
 				}
@@ -46,8 +46,8 @@ public class ChestCommands implements CommandExecutor {
 			} else if (args.length == 1) {
 				if (sender.hasPermission("alphachest.admin")) {
 					VirtualChest chest = chestManager.getChest(args[0]);
-					EntityPlayer eh = ((CraftPlayer) sender).getHandle();
-					eh.a(chest);
+					EntityPlayer player = ((CraftPlayer) sender).getHandle();
+					player.openContainer(chest);
 				} else {
 					Teller.tell(sender, Type.Error, "You're not allowed to open other user's chests.");
 				}

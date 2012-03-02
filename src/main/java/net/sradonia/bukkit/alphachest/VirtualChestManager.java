@@ -168,7 +168,7 @@ public class VirtualChestManager {
 			if (stack != null) {
 				NBTTagCompound item = new NBTTagCompound();
 				item.setByte("Slot", (byte) slot);
-				stack.b(item);
+				stack.save(item);
 				items.add(item);
 			}
 		}

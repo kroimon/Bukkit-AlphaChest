@@ -11,17 +11,16 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 
-
 public class WorkbenchCommand implements CommandExecutor {
 
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 		if (sender instanceof CraftPlayer) {
 			if (sender.hasPermission("alphachest.workbench")) {
-				final EntityPlayer eh = ((CraftPlayer) sender).getHandle();
-				
-				final int windowId = 1; // should be safe to use a static window ID
-		        eh.netServerHandler.sendPacket(new Packet100OpenWindow(windowId, 1, "Virtual Crafting", 9));
-		        eh.activeContainer = new VirtualWorkbench(eh, windowId);
+				final EntityPlayer player = ((CraftPlayer) sender).getHandle();
+
+				int containerCounter = player.nextContainerCounter();
+				player.netServerHandler.sendPacket(new Packet100OpenWindow(containerCounter, 1, "Virtual Crafting", 9));
+				player.activeContainer = new VirtualWorkbench(player, containerCounter);
 			} else {
 				Teller.tell(sender, Type.Error, "You're not allowed to use this command.");
 			}

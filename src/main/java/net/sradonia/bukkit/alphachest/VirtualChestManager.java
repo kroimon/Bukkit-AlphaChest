@@ -132,15 +132,16 @@ public class VirtualChestManager {
 			final String playerName = entry.getKey();
 			final VirtualChest chest = entry.getValue();
 
-			// Delete the old plaintext file if it exists
-			new File(dataFolder, playerName + ".chest").delete();
-
 			if (chest == null) {
-				// Chest got removed, so we have to delete the old file.
+				// Chest got removed, so we have to delete the old file(s).
+				new File(dataFolder, playerName + ".chest").delete();
 				new File(dataFolder, playerName + ".chest.nbt").delete();
 				chestIterator.remove();
 
 			} else if (saveAll || chest.isChanged()) {
+				// Delete the old plaintext file if it exists
+				new File(dataFolder, playerName + ".chest").delete();
+
 				try {
 					// Write the new chest file in NBT format
 					final File nbtFile = new File(dataFolder, playerName + ".chest.nbt");

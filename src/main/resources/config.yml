@@ -1,2 +1,3 @@
 autosave: 10
 silentAutosave: false
+clearOnDeath: false

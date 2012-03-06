@@ -27,13 +27,22 @@ commands:
         permission: alphachest.workbench
 
 permissions:
+    alphachest.*:
+        description: Gives access to the virtual chest and workbench.
+        children:
+            alphachest.chest: true
+            alphachest.workbench: true
+    alphachest.chest:
+        description: Gives access to the virtual chest.
+    alphachest.workbench:
+        description: Gives access to the virtual workbench.
+
+    alphachest.keepOnDeath:
+        description: Allows to keep the chest contents on death even if clearOnDeath setting is enabled.
+
     alphachest.admin:
         description: Allows to open and clear someone else's chest.
         default: op
-    alphachest.chest:
-        description: Gives access to the virtual chest.
     alphachest.save:
         description: Allows to save all virtual chests.
         default: op
-    alphachest.workbench:
-        description: Gives access to the virtual workbench.

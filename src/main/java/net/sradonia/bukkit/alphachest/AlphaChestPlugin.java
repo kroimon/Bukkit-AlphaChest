@@ -6,12 +6,18 @@ import java.util.logging.Logger;
 import net.sradonia.bukkit.alphachest.commands.ChestCommands;
 import net.sradonia.bukkit.alphachest.commands.WorkbenchCommand;
 
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
-public class AlphaChestPlugin extends JavaPlugin {
+public class AlphaChestPlugin extends JavaPlugin implements Listener {
 	private Logger log;
 
 	private VirtualChestManager chestManager;
+	private boolean clearOnDeath;
 
 	public void onEnable() {
 		log = getLogger();
@@ -25,12 +31,17 @@ public class AlphaChestPlugin extends JavaPlugin {
 		int chestCount = chestManager.load();
 		log.info("loaded " + chestCount + " chests");
 
+		clearOnDeath = getConfig().getBoolean("clearOnDeath");
+
 		// Set command executors
 		final ChestCommands chestCommands = new ChestCommands(chestManager);
 		getCommand("chest").setExecutor(chestCommands);
 		getCommand("clearchest").setExecutor(chestCommands);
 		getCommand("savechests").setExecutor(chestCommands);
 		getCommand("workbench").setExecutor(new WorkbenchCommand());
+
+		// Register events
+		getServer().getPluginManager().registerEvents(this, this);
 
 		// Schedule auto-saving
 		int autosaveInterval = getConfig().getInt("autosave") * 1200;
@@ -53,4 +64,11 @@ public class AlphaChestPlugin extends JavaPlugin {
 		log.info("version [" + getDescription().getVersion() + "] disabled");
 	}
 
+	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+	public void onPlayerDeath(final PlayerDeathEvent event) {
+		final Player player = event.getEntity();
+		if (clearOnDeath && !player.hasPermission("alphachest.keepOnDeath")) {
+			chestManager.removeChest(player.getName());
+		}
+	}
 }

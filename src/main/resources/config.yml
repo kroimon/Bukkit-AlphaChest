@@ -1,3 +1,9 @@
+# Interval (in minutes) the plugin should save the changed chests to disk.
+# Setting this to zero disables periodic saving. 
 autosave: 10
+
+# Set this to true to suppress log messages while auto-saving chests.
 silentAutosave: false
+
+# Set this to true to clear a player's chest on death if he does not have the "alphachest.keepOnDeath" permission.
 clearOnDeath: false

@@ -45,13 +45,15 @@ public class AlphaChestPlugin extends JavaPlugin implements Listener {
 
 		// Schedule auto-saving
 		int autosaveInterval = getConfig().getInt("autosave") * 1200;
-		getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
-			public void run() {
-				int savedChests = chestManager.save(false);
-				if (savedChests > 0 && !getConfig().getBoolean("silentAutosave"))
-					log.info("auto-saved " + savedChests + " chests");
-			}
-		}, autosaveInterval, autosaveInterval);
+		if (autosaveInterval > 0) {
+			getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
+				public void run() {
+					int savedChests = chestManager.save(false);
+					if (savedChests > 0 && !getConfig().getBoolean("silentAutosave"))
+						log.info("auto-saved " + savedChests + " chests");
+				}
+			}, autosaveInterval, autosaveInterval);
+		}
 
 		// Success
 		log.info("version [" + getDescription().getVersion() + "] enabled");

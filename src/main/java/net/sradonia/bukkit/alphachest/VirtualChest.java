@@ -9,7 +9,7 @@ public class VirtualChest extends InventoryLargeChest {
 	private boolean changed;
 
 	public VirtualChest() {
-		super("Virtual Chest", new TileEntityChest(), new TileEntityChest());
+		super("VIP Batoh", new TileEntityChest(), new TileEntityChest());
 		changed = false;
 	}
 

@@ -8,27 +8,30 @@ import java.util.logging.Level;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
-import net.minecraft.server.ItemStack;
 import net.minecraft.server.NBTBase;
 import net.minecraft.server.NBTTagCompound;
 import net.minecraft.server.NBTTagList;
+import org.bukkit.Bukkit;
+import org.bukkit.craftbukkit.inventory.CraftItemStack;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 
 public class VirtualChestManager {
 	private final AlphaChestPlugin plugin;
-	private final HashMap<String, VirtualChest> chests;
+	private final HashMap<String, Inventory> chests;
 	private final File dataFolder;
 
 	public VirtualChestManager(AlphaChestPlugin plugin, File dataFolder) {
 		this.plugin = plugin;
 		this.dataFolder = dataFolder;
-		this.chests = new HashMap<String, VirtualChest>();
+		this.chests = new HashMap<String, Inventory>();
 	}
 
-	public VirtualChest getChest(String playerName) {
-		VirtualChest chest = chests.get(playerName.toLowerCase());
+	public Inventory getChest(String playerName) {
+		Inventory chest = chests.get(playerName.toLowerCase());
 
 		if (chest == null) {
-			chest = new VirtualChest();
+			chest = Bukkit.getServer().createInventory(null, 54);
 			chests.put(playerName.toLowerCase(), chest);
 		}
 
@@ -68,8 +71,8 @@ public class VirtualChestManager {
 		return chests.size();
 	}
 
-	private VirtualChest loadChestFromTextfile(File chestFile) throws IOException {
-		final VirtualChest chest = new VirtualChest();
+	private Inventory loadChestFromTextfile(File chestFile) throws IOException {
+		final Inventory chest = Bukkit.getServer().createInventory(null, 54);
 
 		final BufferedReader in = new BufferedReader(new FileReader(chestFile));
 
@@ -93,13 +96,11 @@ public class VirtualChestManager {
 		}
 
 		in.close();
-
-		chest.setChanged(false);
 		return chest;
 	}
 
-	private VirtualChest loadChestFromNBT(File chestFile) throws IOException {
-		final VirtualChest chest = new VirtualChest();
+	private Inventory loadChestFromNBT(File chestFile) throws IOException {
+		final Inventory chest = Bukkit.getServer().createInventory(null, 54);
 
 		final DataInputStream in = new DataInputStream(new GZIPInputStream(new FileInputStream(chestFile)));
 		final NBTTagCompound nbt = (NBTTagCompound) NBTBase.b(in);
@@ -112,12 +113,10 @@ public class VirtualChestManager {
 			NBTTagCompound item = (NBTTagCompound) items.get(i);
 			byte slot = item.getByte("Slot");
 			if (slot >= 0 && slot < chestSize) {
-				ItemStack itemStack = ItemStack.a(item);
+				ItemStack itemStack = new CraftItemStack(net.minecraft.server.ItemStack.a(item));
 				chest.setItem(slot, itemStack);
 			}
 		}
-
-		chest.setChanged(false);
 		return chest;
 	}
 
@@ -126,11 +125,11 @@ public class VirtualChestManager {
 
 		dataFolder.mkdirs();
 
-		Iterator<Entry<String, VirtualChest>> chestIterator = chests.entrySet().iterator();
+		Iterator<Entry<String, Inventory>> chestIterator = chests.entrySet().iterator();
 		while (chestIterator.hasNext()) {
-			final Entry<String, VirtualChest> entry = chestIterator.next();
+			final Entry<String, Inventory> entry = chestIterator.next();
 			final String playerName = entry.getKey();
-			final VirtualChest chest = entry.getValue();
+			final Inventory chest = entry.getValue();
 
 			if (chest == null) {
 				// Chest got removed, so we have to delete the old file(s).
@@ -138,7 +137,7 @@ public class VirtualChestManager {
 				new File(dataFolder, playerName + ".chest.nbt").delete();
 				chestIterator.remove();
 
-			} else if (saveAll || chest.isChanged()) {
+			} else {
 				// Delete the old plaintext file if it exists
 				new File(dataFolder, playerName + ".chest").delete();
 
@@ -146,7 +145,6 @@ public class VirtualChestManager {
 					// Write the new chest file in NBT format
 					final File nbtFile = new File(dataFolder, playerName + ".chest.nbt");
 					saveChestToNBT(chest, nbtFile);
-					chest.setChanged(false);
 
 					savedChests++;
 				} catch (IOException e) {
@@ -158,7 +156,7 @@ public class VirtualChestManager {
 		return savedChests;
 	}
 
-	private void saveChestToNBT(VirtualChest chest, File chestFile) throws IOException {
+	private void saveChestToNBT(Inventory chest, File chestFile) throws IOException {
 		final DataOutputStream out = new DataOutputStream(new GZIPOutputStream(new FileOutputStream(chestFile)));
 
 		NBTTagList items = new NBTTagList();
@@ -169,7 +167,7 @@ public class VirtualChestManager {
 			if (stack != null) {
 				NBTTagCompound item = new NBTTagCompound();
 				item.setByte("Slot", (byte) slot);
-				stack.save(item);
+				((CraftItemStack) stack).getHandle().save(item);
 				items.add(item);
 			}
 		}

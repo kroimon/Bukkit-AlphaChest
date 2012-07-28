@@ -1,16 +1,14 @@
 package net.sradonia.bukkit.alphachest.commands;
 
-import net.minecraft.server.EntityPlayer;
-import net.sradonia.bukkit.alphachest.VirtualChest;
-import net.sradonia.bukkit.alphachest.VirtualChestManager;
 import net.sradonia.bukkit.alphachest.Teller;
 import net.sradonia.bukkit.alphachest.Teller.Type;
+import net.sradonia.bukkit.alphachest.VirtualChestManager;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 
 public class ChestCommands implements CommandExecutor {
 
@@ -33,21 +31,20 @@ public class ChestCommands implements CommandExecutor {
 	}
 
 	private boolean performChestCommand(CommandSender sender, String[] args) {
-		if (sender instanceof CraftPlayer) {
+		if (sender instanceof Player) {
+			Player player = (Player) sender;
 			if (args.length == 0) {
 				if (sender.hasPermission("alphachest.chest")) {
-					VirtualChest chest = chestManager.getChest(sender.getName());
-					EntityPlayer player = ((CraftPlayer) sender).getHandle();
-					player.openContainer(chest);
+					Inventory chest = chestManager.getChest(sender.getName());
+					player.openInventory(chest);
 				} else {
 					Teller.tell(sender, Type.Error, "You're not allowed to use this command.");
 				}
 				return true;
 			} else if (args.length == 1) {
 				if (sender.hasPermission("alphachest.admin")) {
-					VirtualChest chest = chestManager.getChest(args[0]);
-					EntityPlayer player = ((CraftPlayer) sender).getHandle();
-					player.openContainer(chest);
+					Inventory chest = chestManager.getChest(args[0]);
+					player.openInventory(chest);
 				} else {
 					Teller.tell(sender, Type.Error, "You're not allowed to open other user's chests.");
 				}

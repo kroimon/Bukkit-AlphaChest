@@ -7,3 +7,6 @@ silentAutosave: false
 
 # Set this to true to clear a player's chest on death if he does not have the "alphachest.keepOnDeath" permission.
 clearOnDeath: false
+
+# Set this to true to drop the contents of the player's chest on death if he does not have the "alphachest.keepOnDeath" permission.
+dropOnDeath: false

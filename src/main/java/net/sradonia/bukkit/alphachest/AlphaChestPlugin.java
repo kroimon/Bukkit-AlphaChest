@@ -1,6 +1,7 @@
 package net.sradonia.bukkit.alphachest;
 
 import java.io.File;
+import java.util.List;
 import java.util.logging.Logger;
 
 import net.sradonia.bukkit.alphachest.commands.ChestCommands;
@@ -11,6 +12,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class AlphaChestPlugin extends JavaPlugin implements Listener {
@@ -18,6 +21,7 @@ public class AlphaChestPlugin extends JavaPlugin implements Listener {
 
 	private VirtualChestManager chestManager;
 	private boolean clearOnDeath;
+	private boolean dropOnDeath;
 
 	@Override
 	public void onEnable() {
@@ -33,6 +37,7 @@ public class AlphaChestPlugin extends JavaPlugin implements Listener {
 		log.info("loaded " + chestCount + " chests");
 
 		clearOnDeath = getConfig().getBoolean("clearOnDeath");
+		dropOnDeath  = getConfig().getBoolean("dropOnDeath");
 
 		// Set command executors
 		final ChestCommands chestCommands = new ChestCommands(chestManager);
@@ -63,10 +68,32 @@ public class AlphaChestPlugin extends JavaPlugin implements Listener {
 		log.info("saved " + savedChests + " chests");
 	}
 
-	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onPlayerDeath(final PlayerDeathEvent event) {
 		final Player player = event.getEntity();
-		if (clearOnDeath && !player.hasPermission("alphachest.keepOnDeath")) {
+
+		boolean drop  = dropOnDeath;
+		boolean clear = dropOnDeath || clearOnDeath;
+
+		if (player.hasPermission("alphachest.keepOnDeath")) {
+			drop  = false;
+			clear = false;
+		} else if (player.hasPermission("alphachest.dropOnDeath")) {
+			drop  = true;
+			clear = true;
+		} else if (player.hasPermission("alphachest.clearOnDeath")) {
+			drop  = false;
+			clear = true;
+		}
+
+		if (drop) {
+			List<ItemStack> drops = event.getDrops();
+			Inventory chest = chestManager.getChest(player.getName());
+			for (int i = 0; i < chest.getSize(); i++) {
+				drops.add(chest.getItem(i));
+			}
+		}
+		if (clear) {
 			chestManager.removeChest(player.getName());
 		}
 	}

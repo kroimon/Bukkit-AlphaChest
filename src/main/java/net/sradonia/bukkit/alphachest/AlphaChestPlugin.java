@@ -19,6 +19,7 @@ public class AlphaChestPlugin extends JavaPlugin implements Listener {
 	private VirtualChestManager chestManager;
 	private boolean clearOnDeath;
 
+	@Override
 	public void onEnable() {
 		log = getLogger();
 
@@ -54,16 +55,12 @@ public class AlphaChestPlugin extends JavaPlugin implements Listener {
 				}
 			}, autosaveInterval, autosaveInterval);
 		}
-
-		// Success
-		log.info("version [" + getDescription().getVersion() + "] enabled");
 	}
 
+	@Override
 	public void onDisable() {
 		int savedChests = chestManager.save(false);
-
 		log.info("saved " + savedChests + " chests");
-		log.info("version [" + getDescription().getVersion() + "] disabled");
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)

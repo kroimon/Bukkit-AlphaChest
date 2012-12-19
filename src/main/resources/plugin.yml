@@ -13,13 +13,13 @@ commands:
               /<command> [player] - Opens someone else's chest.
         permission: alphachest.chest
     clearchest:
-        description: Clears the contents of a chest.
+        description: Clears the contents of your AlphaChest.
         usage: |
               /<command> - Clears your private chest.
               /<command> [player] - Clears someone else's chest.
         permission: alphachest.chest
     savechests:
-        description: Saves the chests to disk.
+        description: Saves all AlphaChests to disk.
         permission: alphachest.save
     workbench:
         aliases: [craft, craftbox, craftingbox]

@@ -4,6 +4,7 @@ import net.sradonia.bukkit.alphachest.Teller;
 import net.sradonia.bukkit.alphachest.Teller.Type;
 import net.sradonia.bukkit.alphachest.VirtualChestManager;
 
+import org.bukkit.GameMode;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -33,7 +34,15 @@ public class ChestCommands implements CommandExecutor {
 	private boolean performChestCommand(CommandSender sender, String[] args) {
 		if (sender instanceof Player) {
 			Player player = (Player) sender;
+
+			// Prevent opening of the chest in Creative Mode
+			if (player.getGameMode().equals(GameMode.CREATIVE)) {
+				Teller.tell(sender, Type.Error, "It's not possible to open your chest in Creative Mode!");
+				return true;
+			}
+
 			if (args.length == 0) {
+				// Open own chest
 				if (sender.hasPermission("alphachest.chest")) {
 					Inventory chest = chestManager.getChest(sender.getName());
 					player.openInventory(chest);
@@ -42,6 +51,7 @@ public class ChestCommands implements CommandExecutor {
 				}
 				return true;
 			} else if (args.length == 1) {
+				// Open someone else's chest
 				if (sender.hasPermission("alphachest.admin")) {
 					Inventory chest = chestManager.getChest(args[0]);
 					player.openInventory(chest);
@@ -49,10 +59,9 @@ public class ChestCommands implements CommandExecutor {
 					Teller.tell(sender, Type.Error, "You're not allowed to open other user's chests.");
 				}
 				return true;
-
-			} else {
-				return false;
 			}
+
+			return false;
 		} else {
 			Teller.tell(sender, Type.Error, "Only players are able to open chests.");
 			return true;

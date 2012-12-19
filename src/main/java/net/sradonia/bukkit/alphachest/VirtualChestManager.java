@@ -8,11 +8,11 @@ import java.util.logging.Level;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
-import net.minecraft.server.NBTBase;
-import net.minecraft.server.NBTTagCompound;
-import net.minecraft.server.NBTTagList;
+import net.minecraft.server.v1_4_5.NBTBase;
+import net.minecraft.server.v1_4_5.NBTTagCompound;
+import net.minecraft.server.v1_4_5.NBTTagList;
 import org.bukkit.Bukkit;
-import org.bukkit.craftbukkit.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_4_5.inventory.CraftItemStack;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
@@ -31,7 +31,7 @@ public class VirtualChestManager {
 		Inventory chest = chests.get(playerName.toLowerCase());
 
 		if (chest == null) {
-			chest = Bukkit.getServer().createInventory(null, 54);
+			chest = Bukkit.getServer().createInventory(null, 6 * 9);
 			chests.put(playerName.toLowerCase(), chest);
 		}
 
@@ -113,7 +113,8 @@ public class VirtualChestManager {
 			NBTTagCompound item = (NBTTagCompound) items.get(i);
 			byte slot = item.getByte("Slot");
 			if (slot >= 0 && slot < chestSize) {
-				ItemStack itemStack = new CraftItemStack(net.minecraft.server.ItemStack.a(item));
+				net.minecraft.server.v1_4_5.ItemStack nmsStack = net.minecraft.server.v1_4_5.ItemStack.a(item);
+				ItemStack itemStack = CraftItemStack.asBukkitCopy(nmsStack);
 				chest.setItem(slot, itemStack);
 			}
 		}
@@ -167,7 +168,7 @@ public class VirtualChestManager {
 			if (stack != null) {
 				NBTTagCompound item = new NBTTagCompound();
 				item.setByte("Slot", (byte) slot);
-				((CraftItemStack) stack).getHandle().save(item);
+				CraftItemStack.asNMSCopy(stack).save(item);
 				items.add(item);
 			}
 		}

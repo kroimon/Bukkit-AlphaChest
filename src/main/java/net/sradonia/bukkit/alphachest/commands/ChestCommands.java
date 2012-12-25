@@ -92,7 +92,7 @@ public class ChestCommands implements CommandExecutor {
 
 	private boolean performSaveChestsCommand(CommandSender sender, String[] args) {
 		if (sender.hasPermission("alphachest.save")) {
-			int savedChests = chestManager.save(true);
+			int savedChests = chestManager.save();
 			Teller.tell(sender, Type.Success, "Saved " + savedChests + " chests.");
 		} else {
 			Teller.tell(sender, Type.Error, "You're not allowed to use this command.");

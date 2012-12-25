@@ -17,7 +17,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class AlphaChestPlugin extends JavaPlugin implements Listener {
-	private Logger log;
+	private Logger logger;
 
 	private VirtualChestManager chestManager;
 	private boolean clearOnDeath;
@@ -25,19 +25,19 @@ public class AlphaChestPlugin extends JavaPlugin implements Listener {
 
 	@Override
 	public void onEnable() {
-		log = getLogger();
+		logger = getLogger();
 
 		// Save default config.yml
 		if (!new File(getDataFolder(), "config.yml").exists())
 			saveDefaultConfig();
 
 		// Initialize
-		chestManager = new VirtualChestManager(this, new File(getDataFolder(), "chests"));
-		int chestCount = chestManager.load();
-		log.info("loaded " + chestCount + " chests");
+		File chestFolder = new File(getDataFolder(), "chests");
+		chestManager = new VirtualChestManager(chestFolder, getLogger());
 
+		// Load settings
 		clearOnDeath = getConfig().getBoolean("clearOnDeath");
-		dropOnDeath  = getConfig().getBoolean("dropOnDeath");
+		dropOnDeath = getConfig().getBoolean("dropOnDeath");
 
 		// Set command executors
 		final ChestCommands chestCommands = new ChestCommands(chestManager);
@@ -54,9 +54,9 @@ public class AlphaChestPlugin extends JavaPlugin implements Listener {
 		if (autosaveInterval > 0) {
 			getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
 				public void run() {
-					int savedChests = chestManager.save(false);
+					int savedChests = chestManager.save();
 					if (savedChests > 0 && !getConfig().getBoolean("silentAutosave"))
-						log.info("auto-saved " + savedChests + " chests");
+						logger.info("auto-saved " + savedChests + " chests");
 				}
 			}, autosaveInterval, autosaveInterval);
 		}
@@ -64,25 +64,28 @@ public class AlphaChestPlugin extends JavaPlugin implements Listener {
 
 	@Override
 	public void onDisable() {
-		int savedChests = chestManager.save(false);
-		log.info("saved " + savedChests + " chests");
+		int savedChests = chestManager.save();
+		logger.info("saved " + savedChests + " chests");
 	}
 
+	/**
+	 * Handles a player's death and clears the chest or drops its contents depending on configuration and permissions.
+	 */
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onPlayerDeath(final PlayerDeathEvent event) {
 		final Player player = event.getEntity();
 
-		boolean drop  = dropOnDeath;
+		boolean drop = dropOnDeath;
 		boolean clear = dropOnDeath || clearOnDeath;
 
 		if (player.hasPermission("alphachest.keepOnDeath")) {
-			drop  = false;
+			drop = false;
 			clear = false;
 		} else if (player.hasPermission("alphachest.dropOnDeath")) {
-			drop  = true;
+			drop = true;
 			clear = true;
 		} else if (player.hasPermission("alphachest.clearOnDeath")) {
-			drop  = false;
+			drop = false;
 			clear = true;
 		}
 

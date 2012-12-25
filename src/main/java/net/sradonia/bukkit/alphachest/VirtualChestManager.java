@@ -5,28 +5,149 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.logging.Level;
-import java.util.zip.GZIPInputStream;
-import java.util.zip.GZIPOutputStream;
+import java.util.logging.Logger;
 
-import net.minecraft.server.v1_4_6.NBTBase;
-import net.minecraft.server.v1_4_6.NBTTagCompound;
-import net.minecraft.server.v1_4_6.NBTTagList;
 import org.bukkit.Bukkit;
-import org.bukkit.craftbukkit.v1_4_6.inventory.CraftItemStack;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
 
 public class VirtualChestManager {
-	private final AlphaChestPlugin plugin;
-	private final HashMap<String, Inventory> chests;
-	private final File dataFolder;
+	private static final String YAML_CHEST_EXTENSION = ".chest.yml";
 
-	public VirtualChestManager(AlphaChestPlugin plugin, File dataFolder) {
-		this.plugin = plugin;
+	private final File dataFolder;
+	private final Logger logger;
+	private final HashMap<String, Inventory> chests;
+
+	public VirtualChestManager(File dataFolder, Logger logger) {
+		this.logger = logger;
 		this.dataFolder = dataFolder;
+
 		this.chests = new HashMap<String, Inventory>();
+
+		migrateLegacyFiles();
+		load();
 	}
 
+	/**
+	 * Migrates chests from legacy file formats to the latest file format.
+	 */
+	private void migrateLegacyFiles() {
+		dataFolder.mkdirs();
+
+		for (File file : dataFolder.listFiles()) {
+			String fileName = file.getName();
+
+			try {
+				String playerName;
+				Inventory chest;
+
+				// Load old file
+				if (fileName.endsWith(".chest")) {
+					// Plaintext file format
+					playerName = fileName.substring(0, fileName.length() - 6);
+					chest = InventoryIO.loadFromTextfile(file);
+
+				} else if (fileName.endsWith(".chest.nbt")) {
+					// NBT file format
+					playerName = fileName.substring(0, fileName.length() - 10);
+					chest = FragileInventoryIO.loadFromNBT(file);
+
+				} else {
+					continue;
+				}
+
+				File newFile = new File(dataFolder, playerName + YAML_CHEST_EXTENSION);
+				if (newFile.exists()) {
+					// New file already exists, warn user
+					logger.warning("Couldn't migrate chest from [" + fileName + "] to new format because a file named [" + newFile.getName()
+							+ "] already exists!");
+
+				} else {
+					// Write new file format
+					InventoryIO.saveToYaml(chest, newFile);
+
+					// Delete old file
+					file.delete();
+
+					logger.info("Successfully migrated chest from [" + fileName + "] to new file format [" + newFile.getName() + "].");
+				}
+
+			} catch (NoClassDefFoundError e) {
+				// we might get a NoClassDefFoundError when calling FragileInventoryIO.loadFromNBT() for unsupported CraftBukkit/Minecraft versions!
+				logger.warning("Couldn't migrate chest file [" + fileName + "] using this CraftBukkit/Minecraft version!");
+			} catch (Exception e) {
+				logger.log(Level.WARNING, "Couldn't migrate chest file: " + fileName, e);
+			}
+		}
+	}
+
+	/**
+	 * Loads all existing chests from the data folder.
+	 */
+	private void load() {
+		dataFolder.mkdirs();
+
+		FilenameFilter filter = new FilenameFilter() {
+			public boolean accept(File dir, String name) {
+				return name.endsWith(YAML_CHEST_EXTENSION);
+			}
+		};
+		for (File chestFile : dataFolder.listFiles(filter)) {
+			String chestFileName = chestFile.getName();
+			try {
+				String playerName = chestFileName.substring(0, chestFileName.length() - 10);
+				chests.put(playerName.toLowerCase(), InventoryIO.loadFromYaml(chestFile));
+			} catch (Exception e) {
+				logger.log(Level.WARNING, "Couldn't load chest file: " + chestFileName, e);
+			}
+		}
+
+		logger.info("loaded " + chests.size() + " chests");
+	}
+
+	/**
+	 * Saves all existing chests to the data folder.
+	 * 
+	 * @return the number of successfully written chests
+	 */
+	public int save() {
+		int savedChests = 0;
+
+		dataFolder.mkdirs();
+
+		Iterator<Entry<String, Inventory>> chestIterator = chests.entrySet().iterator();
+		while (chestIterator.hasNext()) {
+			final Entry<String, Inventory> entry = chestIterator.next();
+			final String playerName = entry.getKey();
+			final Inventory chest = entry.getValue();
+
+			final File chestFile = new File(dataFolder, playerName + YAML_CHEST_EXTENSION);
+			if (chest == null) {
+				// Chest got removed, so we have to delete the file.
+				chestFile.delete();
+				chestIterator.remove();
+
+			} else {
+				try {
+					// Write the chest file in YAML format
+					InventoryIO.saveToYaml(chest, chestFile);
+
+					savedChests++;
+				} catch (IOException e) {
+					logger.log(Level.WARNING, "Couldn't save chest file: " + chestFile.getName(), e);
+				}
+			}
+		}
+
+		return savedChests;
+	}
+
+	/**
+	 * Gets a player's virtual chest.
+	 * 
+	 * @param playerName
+	 *        the name of the player
+	 * @return the player's virtual chest.
+	 */
 	public Inventory getChest(String playerName) {
 		Inventory chest = chests.get(playerName.toLowerCase());
 
@@ -38,146 +159,23 @@ public class VirtualChestManager {
 		return chest;
 	}
 
+	/**
+	 * Clears a player's virtual chest.
+	 * 
+	 * @param playerName
+	 *        the name of the player
+	 */
 	public void removeChest(String playerName) {
 		// Put a null to the map so we remember to delete the file when saving!
 		chests.put(playerName.toLowerCase(), null);
 	}
 
+	/**
+	 * Gets the number of virtual chests.
+	 * 
+	 * @return the number of virtual chests
+	 */
 	public int getChestCount() {
 		return chests.size();
 	}
-
-	public int load() {
-		chests.clear();
-
-		dataFolder.mkdirs();
-		for (File chestFile : dataFolder.listFiles()) {
-			String chestFileName = chestFile.getName();
-			try {
-				if (chestFileName.endsWith(".chest.nbt")) {
-					// New NBT file format
-					String playerName = chestFileName.substring(0, chestFile.getName().length() - 10);
-					chests.put(playerName.toLowerCase(), loadChestFromNBT(chestFile));
-				} else if (chestFileName.endsWith(".chest")) {
-					// Old plaintext file format
-					String playerName = chestFileName.substring(0, chestFile.getName().length() - 6);
-					chests.put(playerName.toLowerCase(), loadChestFromTextfile(chestFile));
-				}
-			} catch (IOException e) {
-				plugin.getLogger().log(Level.WARNING, "Couldn't load chest file: " + chestFileName, e);
-			}
-		}
-
-		return chests.size();
-	}
-
-	private Inventory loadChestFromTextfile(File chestFile) throws IOException {
-		final Inventory chest = Bukkit.getServer().createInventory(null, 54);
-
-		final BufferedReader in = new BufferedReader(new FileReader(chestFile));
-
-		String line;
-		int slot = 0;
-		while ((line = in.readLine()) != null) {
-			if (!line.equals("")) {
-				final String[] parts = line.split(":");
-				try {
-					int type = Integer.parseInt(parts[0]);
-					int amount = Integer.parseInt(parts[1]);
-					short damage = Short.parseShort(parts[2]);
-					if (type != 0) {
-						chest.setItem(slot, new ItemStack(type, amount, damage));
-					}
-				} catch (NumberFormatException e) {
-					// ignore
-				}
-				++slot;
-			}
-		}
-
-		in.close();
-		return chest;
-	}
-
-	private Inventory loadChestFromNBT(File chestFile) throws IOException {
-		final Inventory chest = Bukkit.getServer().createInventory(null, 54);
-
-		final DataInputStream in = new DataInputStream(new GZIPInputStream(new FileInputStream(chestFile)));
-		final NBTTagCompound nbt = (NBTTagCompound) NBTBase.b(in);
-		in.close();
-
-		final NBTTagList items = nbt.getList("Items");
-
-		int chestSize = chest.getSize();
-		for (int i = 0; i < items.size(); i++) {
-			NBTTagCompound item = (NBTTagCompound) items.get(i);
-			byte slot = item.getByte("Slot");
-			if (slot >= 0 && slot < chestSize) {
-				net.minecraft.server.v1_4_6.ItemStack nmsStack = net.minecraft.server.v1_4_6.ItemStack.a(item);
-				ItemStack itemStack = CraftItemStack.asBukkitCopy(nmsStack);
-				chest.setItem(slot, itemStack);
-			}
-		}
-		return chest;
-	}
-
-	public int save(boolean saveAll) {
-		int savedChests = 0;
-
-		dataFolder.mkdirs();
-
-		Iterator<Entry<String, Inventory>> chestIterator = chests.entrySet().iterator();
-		while (chestIterator.hasNext()) {
-			final Entry<String, Inventory> entry = chestIterator.next();
-			final String playerName = entry.getKey();
-			final Inventory chest = entry.getValue();
-
-			if (chest == null) {
-				// Chest got removed, so we have to delete the old file(s).
-				new File(dataFolder, playerName + ".chest").delete();
-				new File(dataFolder, playerName + ".chest.nbt").delete();
-				chestIterator.remove();
-
-			} else {
-				// Delete the old plaintext file if it exists
-				new File(dataFolder, playerName + ".chest").delete();
-
-				try {
-					// Write the new chest file in NBT format
-					final File nbtFile = new File(dataFolder, playerName + ".chest.nbt");
-					saveChestToNBT(chest, nbtFile);
-
-					savedChests++;
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-		}
-
-		return savedChests;
-	}
-
-	private void saveChestToNBT(Inventory chest, File chestFile) throws IOException {
-		final DataOutputStream out = new DataOutputStream(new GZIPOutputStream(new FileOutputStream(chestFile)));
-
-		NBTTagList items = new NBTTagList();
-
-		int chestSize = chest.getSize();
-		for (int slot = 0; slot < chestSize; slot++) {
-			ItemStack stack = chest.getItem(slot);
-			if (stack != null) {
-				NBTTagCompound item = new NBTTagCompound();
-				item.setByte("Slot", (byte) slot);
-				CraftItemStack.asNMSCopy(stack).save(item);
-				items.add(item);
-			}
-		}
-
-		final NBTTagCompound nbt = new NBTTagCompound();
-		nbt.set("Items", items);
-
-		NBTBase.a(nbt, out);
-		out.close();
-	}
-
 }

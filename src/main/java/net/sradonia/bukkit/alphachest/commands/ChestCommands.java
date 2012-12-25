@@ -36,8 +36,8 @@ public class ChestCommands implements CommandExecutor {
 			Player player = (Player) sender;
 
 			// Prevent opening of the chest in Creative Mode
-			if (player.getGameMode().equals(GameMode.CREATIVE)) {
-				Teller.tell(sender, Type.Error, "It's not possible to open your chest in Creative Mode!");
+			if (player.getGameMode().equals(GameMode.CREATIVE) && !player.hasPermission("alphachest.chest.creativeMode")) {
+				Teller.tell(sender, Type.Error, "You are not allowed to open your chest in Creative Mode!");
 				return true;
 			}
 
@@ -47,7 +47,7 @@ public class ChestCommands implements CommandExecutor {
 					Inventory chest = chestManager.getChest(sender.getName());
 					player.openInventory(chest);
 				} else {
-					Teller.tell(sender, Type.Error, "You're not allowed to use this command.");
+					Teller.tell(sender, Type.Error, "You are not allowed to use this command.");
 				}
 				return true;
 			} else if (args.length == 1) {
@@ -56,7 +56,7 @@ public class ChestCommands implements CommandExecutor {
 					Inventory chest = chestManager.getChest(args[0]);
 					player.openInventory(chest);
 				} else {
-					Teller.tell(sender, Type.Error, "You're not allowed to open other user's chests.");
+					Teller.tell(sender, Type.Error, "You are not allowed to open other user's chests.");
 				}
 				return true;
 			}
@@ -74,7 +74,7 @@ public class ChestCommands implements CommandExecutor {
 				chestManager.removeChest(sender.getName());
 				Teller.tell(sender, Type.Success, "Successfully cleared your chest.");
 			} else {
-				Teller.tell(sender, Type.Error, "You're not allowed to use this command.");
+				Teller.tell(sender, Type.Error, "You are not allowed to use this command.");
 			}
 			return true;
 		} else if (args.length == 1) {
@@ -82,7 +82,7 @@ public class ChestCommands implements CommandExecutor {
 				chestManager.removeChest(args[0]);
 				Teller.tell(sender, Type.Success, "Successfully cleared " + args[0] + "\'s chest.");
 			} else {
-				Teller.tell(sender, Type.Error, "You're not allowed to clear other user's chests.");
+				Teller.tell(sender, Type.Error, "You are not allowed to clear other user's chests.");
 			}
 			return true;
 		} else {
@@ -95,7 +95,7 @@ public class ChestCommands implements CommandExecutor {
 			int savedChests = chestManager.save();
 			Teller.tell(sender, Type.Success, "Saved " + savedChests + " chests.");
 		} else {
-			Teller.tell(sender, Type.Error, "You're not allowed to use this command.");
+			Teller.tell(sender, Type.Error, "You are not allowed to use this command.");
 		}
 		return true;
 	}

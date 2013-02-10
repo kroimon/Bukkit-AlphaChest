@@ -66,7 +66,7 @@ public class InventoryIO {
 	 *         if the file could not be parsed
 	 */
 	public static Inventory loadFromYaml(File file) throws IOException, InvalidConfigurationException {
-		YamlConfiguration yaml = new YamlConfiguration();
+		YamlConfiguration yaml = new Utf8YamlConfiguration();
 		yaml.load(file);
 
 		int inventorySize = yaml.getInt("size", 6 * 9);
@@ -95,7 +95,7 @@ public class InventoryIO {
 	 *         if the file could not be written
 	 */
 	public static void saveToYaml(Inventory inventory, File file) throws IOException {
-		YamlConfiguration yaml = new YamlConfiguration();
+		YamlConfiguration yaml = new Utf8YamlConfiguration();
 
 		int inventorySize = inventory.getSize();
 		yaml.set("size", inventorySize);

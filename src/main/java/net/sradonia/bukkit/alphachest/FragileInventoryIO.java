@@ -9,12 +9,12 @@ import java.io.IOException;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
-import net.minecraft.server.v1_4_6.NBTBase;
-import net.minecraft.server.v1_4_6.NBTTagCompound;
-import net.minecraft.server.v1_4_6.NBTTagList;
+import net.minecraft.server.v1_4_R1.NBTBase;
+import net.minecraft.server.v1_4_R1.NBTTagCompound;
+import net.minecraft.server.v1_4_R1.NBTTagList;
 
 import org.bukkit.Bukkit;
-import org.bukkit.craftbukkit.v1_4_6.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_4_R1.inventory.CraftItemStack;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
@@ -42,14 +42,14 @@ public class FragileInventoryIO {
 		final NBTTagCompound nbt = (NBTTagCompound) NBTBase.b(in);
 		in.close();
 
-		final net.minecraft.server.v1_4_6.NBTTagList items = nbt.getList("Items");
+		final net.minecraft.server.v1_4_R1.NBTTagList items = nbt.getList("Items");
 
 		int inventorySize = inventory.getSize();
 		for (int i = 0; i < items.size(); i++) {
 			NBTTagCompound item = (NBTTagCompound) items.get(i);
 			byte slot = item.getByte("Slot");
 			if (slot >= 0 && slot < inventorySize) {
-				net.minecraft.server.v1_4_6.ItemStack nmsStack = net.minecraft.server.v1_4_6.ItemStack.a(item);
+				net.minecraft.server.v1_4_R1.ItemStack nmsStack = net.minecraft.server.v1_4_R1.ItemStack.createStack(item);
 				ItemStack itemStack = CraftItemStack.asBukkitCopy(nmsStack);
 				inventory.setItem(slot, itemStack);
 			}

@@ -11,13 +11,11 @@ commands:
         usage: |
               /<command> - Opens your private chest.
               /<command> [player] - Opens someone else's chest.
-        permission: alphachest.chest
     clearchest:
         description: Clears the contents of your AlphaChest.
         usage: |
               /<command> - Clears your private chest.
               /<command> [player] - Clears someone else's chest.
-        permission: alphachest.chest
     savechests:
         description: Saves all AlphaChests to disk.
         permission: alphachest.save
@@ -38,7 +36,11 @@ permissions:
         description: Gives access to the virtual workbench.
 
     alphachest.keepOnDeath:
-        description: Allows to keep the chest contents on death even if clearOnDeath setting is enabled.
+        description: Players with this permission keep the contents of their virtual chest on death.
+    alphachest.dropOnDeath:
+        description: Players with this permission drop the contents of their virtual chest on death.
+    alphachest.clearOnDeath:
+        description: Players with this permission lose the contents of their virtual chest on death.
 
     alphachest.admin:
         description: Allows to open and clear someone else's chest.

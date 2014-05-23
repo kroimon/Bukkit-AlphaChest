@@ -23,61 +23,7 @@ public class VirtualChestManager {
 
 		this.chests = new HashMap<String, Inventory>();
 
-		migrateLegacyFiles();
 		load();
-	}
-
-	/**
-	 * Migrates chests from legacy file formats to the latest file format.
-	 */
-	private void migrateLegacyFiles() {
-		dataFolder.mkdirs();
-
-		for (File file : dataFolder.listFiles()) {
-			String fileName = file.getName();
-
-			try {
-				String playerName;
-				Inventory chest;
-
-				// Load old file
-				if (fileName.endsWith(".chest")) {
-					// Plaintext file format
-					playerName = fileName.substring(0, fileName.length() - 6);
-					chest = InventoryIO.loadFromTextfile(file);
-
-				} else if (fileName.endsWith(".chest.nbt")) {
-					// NBT file format
-					playerName = fileName.substring(0, fileName.length() - 10);
-					chest = FragileInventoryIO.loadFromNBT(file);
-
-				} else {
-					continue;
-				}
-
-				File newFile = new File(dataFolder, playerName + YAML_CHEST_EXTENSION);
-				if (newFile.exists()) {
-					// New file already exists, warn user
-					logger.warning("Couldn't migrate chest from [" + fileName + "] to new format because a file named [" + newFile.getName()
-							+ "] already exists!");
-
-				} else {
-					// Write new file format
-					InventoryIO.saveToYaml(chest, newFile);
-
-					// Delete old file
-					file.delete();
-
-					logger.info("Successfully migrated chest from [" + fileName + "] to new file format [" + newFile.getName() + "].");
-				}
-
-			} catch (NoClassDefFoundError e) {
-				// we might get a NoClassDefFoundError when calling FragileInventoryIO.loadFromNBT() for unsupported CraftBukkit/Minecraft versions!
-				logger.warning("Couldn't migrate chest file [" + fileName + "] using this CraftBukkit/Minecraft version!");
-			} catch (Exception e) {
-				logger.log(Level.WARNING, "Couldn't migrate chest file: " + fileName, e);
-			}
-		}
 	}
 
 	/**

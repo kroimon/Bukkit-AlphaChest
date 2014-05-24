@@ -91,13 +91,13 @@ public class AlphaChestPlugin extends JavaPlugin implements Listener {
 
 		if (drop) {
 			List<ItemStack> drops = event.getDrops();
-			Inventory chest = chestManager.getChest(player.getName());
+			Inventory chest = chestManager.getChest(player.getUniqueId());
 			for (int i = 0; i < chest.getSize(); i++) {
 				drops.add(chest.getItem(i));
 			}
 		}
 		if (clear) {
-			chestManager.removeChest(player.getName());
+			chestManager.removeChest(player.getUniqueId());
 		}
 	}
 }

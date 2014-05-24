@@ -4,10 +4,12 @@ import java.io.*;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map.Entry;
+import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.inventory.Inventory;
 
 public class VirtualChestManager {
@@ -16,13 +18,13 @@ public class VirtualChestManager {
 
 	private final File dataFolder;
 	private final Logger logger;
-	private final HashMap<String, Inventory> chests;
+	private final HashMap<UUID, Inventory> chests;
 
 	public VirtualChestManager(File dataFolder, Logger logger) {
 		this.logger = logger;
 		this.dataFolder = dataFolder;
 
-		this.chests = new HashMap<String, Inventory>();
+		this.chests = new HashMap<UUID, Inventory>();
 
 		load();
 	}
@@ -41,10 +43,27 @@ public class VirtualChestManager {
 		for (File chestFile : dataFolder.listFiles(filter)) {
 			String chestFileName = chestFile.getName();
 			try {
-				String playerName = chestFileName.substring(0, chestFileName.length() - 10);
-				chests.put(playerName.toLowerCase(), InventoryIO.loadFromYaml(chestFile));
-			} catch (Exception e) {
-				logger.log(Level.WARNING, "Couldn't load chest file: " + chestFileName, e);
+				try {
+                    UUID playerUUID = UUID.fromString(chestFileName.substring(0, chestFileName.length() - YAML_EXTENSION_LENGTH));
+                    chests.put(playerUUID, InventoryIO.loadFromYaml(chestFile));
+                } catch (IllegalArgumentException e){
+                    // Assume that the filename isn't a UUID, and is therefore an old player-name chest
+                    String playerName = chestFileName.substring(0, chestFileName.length() - YAML_EXTENSION_LENGTH);
+                    Boolean flagPlayerNotFound = true;
+                    for (OfflinePlayer player : Bukkit.getOfflinePlayers()) {
+                        // Search all the known players, load inventory, flag old file for deletion
+                        if (player.getName().toLowerCase().equals(playerName)) {
+                            flagPlayerNotFound = false;
+                            chests.put(player.getUniqueId(), InventoryIO.loadFromYaml(chestFile));
+                            chestFile.deleteOnExit();
+                        }
+                    }
+                    if (flagPlayerNotFound) {
+                        logger.log(Level.WARNING, "Couldn't load chest file: " + chestFileName);
+                    }
+                }
+            } catch (Exception e) {
+				logger.log(Level.WARNING, "Couldn't load chest file: " + chestFileName);
 			}
 		}
 
@@ -61,13 +80,13 @@ public class VirtualChestManager {
 
 		dataFolder.mkdirs();
 
-		Iterator<Entry<String, Inventory>> chestIterator = chests.entrySet().iterator();
+		Iterator<Entry<UUID, Inventory>> chestIterator = chests.entrySet().iterator();
 		while (chestIterator.hasNext()) {
-			final Entry<String, Inventory> entry = chestIterator.next();
-			final String playerName = entry.getKey();
+			final Entry<UUID, Inventory> entry = chestIterator.next();
+			final UUID playerUUID = entry.getKey();
 			final Inventory chest = entry.getValue();
 
-			final File chestFile = new File(dataFolder, playerName + YAML_CHEST_EXTENSION);
+			final File chestFile = new File(dataFolder, playerUUID.toString() + YAML_CHEST_EXTENSION);
 			if (chest == null) {
 				// Chest got removed, so we have to delete the file.
 				chestFile.delete();
@@ -91,16 +110,16 @@ public class VirtualChestManager {
 	/**
 	 * Gets a player's virtual chest.
 	 * 
-	 * @param playerName
-	 *        the name of the player
+	 * @param playerUUID
+	 *        the UUID of the player
 	 * @return the player's virtual chest.
 	 */
-	public Inventory getChest(String playerName) {
-		Inventory chest = chests.get(playerName.toLowerCase());
+	public Inventory getChest(UUID playerUUID) {
+		Inventory chest = chests.get(playerUUID);
 
 		if (chest == null) {
 			chest = Bukkit.getServer().createInventory(null, 6 * 9);
-			chests.put(playerName.toLowerCase(), chest);
+			chests.put(playerUUID, chest);
 		}
 
 		return chest;
@@ -109,12 +128,12 @@ public class VirtualChestManager {
 	/**
 	 * Clears a player's virtual chest.
 	 * 
-	 * @param playerName
-	 *        the name of the player
+	 * @param playerUUID
+	 *        the UUID of the player
 	 */
-	public void removeChest(String playerName) {
+	public void removeChest(UUID playerUUID) {
 		// Put a null to the map so we remember to delete the file when saving!
-		chests.put(playerName.toLowerCase(), null);
+		chests.put(playerUUID, null);
 	}
 
 	/**

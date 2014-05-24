@@ -4,7 +4,9 @@ import net.sradonia.bukkit.alphachest.Teller;
 import net.sradonia.bukkit.alphachest.Teller.Type;
 import net.sradonia.bukkit.alphachest.VirtualChestManager;
 
+import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -44,7 +46,7 @@ public class ChestCommands implements CommandExecutor {
 			if (args.length == 0) {
 				// Open own chest
 				if (sender.hasPermission("alphachest.chest")) {
-					Inventory chest = chestManager.getChest(sender.getName());
+					Inventory chest = chestManager.getChest(((Player) sender).getUniqueId());
 					player.openInventory(chest);
 				} else {
 					Teller.tell(sender, Type.Error, "You are not allowed to use this command.");
@@ -53,8 +55,18 @@ public class ChestCommands implements CommandExecutor {
 			} else if (args.length == 1) {
 				// Open someone else's chest
 				if (sender.hasPermission("alphachest.admin")) {
-					Inventory chest = chestManager.getChest(args[0]);
-					player.openInventory(chest);
+                    Boolean flagNotFound=true;
+                    // Search all players known to the server for the name specified
+                    for (OfflinePlayer target : Bukkit.getOfflinePlayers()) {
+                        if (target.getName().equalsIgnoreCase(args[0])) {
+                            flagNotFound=false;
+                            Inventory chest = chestManager.getChest(target.getUniqueId());
+                            player.openInventory(chest);
+                        }
+                    }
+                    if (flagNotFound) {
+                        Teller.tell(sender, Type.Error, String.format("Chest for %s not found",args[0]));
+                    }
 				} else {
 					Teller.tell(sender, Type.Error, "You are not allowed to open other user's chests.");
 				}
@@ -71,7 +83,7 @@ public class ChestCommands implements CommandExecutor {
 	private boolean performClearChestCommand(CommandSender sender, String[] args) {
 		if (args.length == 0 && sender instanceof Player) {
 			if (sender.hasPermission("alphachest.chest")) {
-				chestManager.removeChest(sender.getName());
+				chestManager.removeChest(((Player) sender).getUniqueId());
 				Teller.tell(sender, Type.Success, "Successfully cleared your chest.");
 			} else {
 				Teller.tell(sender, Type.Error, "You are not allowed to use this command.");
@@ -79,8 +91,18 @@ public class ChestCommands implements CommandExecutor {
 			return true;
 		} else if (args.length == 1) {
 			if (sender.hasPermission("alphachest.admin")) {
-				chestManager.removeChest(args[0]);
-				Teller.tell(sender, Type.Success, "Successfully cleared " + args[0] + "\'s chest.");
+                Boolean flagNotFound=true;
+                for (OfflinePlayer target : Bukkit.getOfflinePlayers()) {
+                    // Search all players known to the server for the name specified
+                    if (target.getName().equalsIgnoreCase(args[0])) {
+                        flagNotFound=false;
+                        chestManager.removeChest(target.getUniqueId());
+                        Teller.tell(sender, Type.Success, "Successfully cleared " + args[0] + "\'s chest.");
+                    }
+                }
+                if (flagNotFound) {
+                    Teller.tell(sender, Type.Error, String.format("Chest for %s not found",args[0]));
+                }
 			} else {
 				Teller.tell(sender, Type.Error, "You are not allowed to clear other user's chests.");
 			}

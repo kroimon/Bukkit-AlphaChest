@@ -12,6 +12,7 @@ import org.bukkit.inventory.Inventory;
 
 public class VirtualChestManager {
 	private static final String YAML_CHEST_EXTENSION = ".chest.yml";
+    private static final int YAML_EXTENSION_LENGTH = YAML_CHEST_EXTENSION.length();
 
 	private final File dataFolder;
 	private final Logger logger;

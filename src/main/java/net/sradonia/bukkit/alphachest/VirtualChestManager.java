@@ -14,7 +14,7 @@ import org.bukkit.inventory.Inventory;
 
 public class VirtualChestManager {
 	private static final String YAML_CHEST_EXTENSION = ".chest.yml";
-    private static final int YAML_EXTENSION_LENGTH = YAML_CHEST_EXTENSION.length();
+	private static final int YAML_EXTENSION_LENGTH = YAML_CHEST_EXTENSION.length();
 
 	private final File dataFolder;
 	private final Logger logger;
@@ -44,25 +44,25 @@ public class VirtualChestManager {
 			String chestFileName = chestFile.getName();
 			try {
 				try {
-                    UUID playerUUID = UUID.fromString(chestFileName.substring(0, chestFileName.length() - YAML_EXTENSION_LENGTH));
-                    chests.put(playerUUID, InventoryIO.loadFromYaml(chestFile));
-                } catch (IllegalArgumentException e){
-                    // Assume that the filename isn't a UUID, and is therefore an old player-name chest
-                    String playerName = chestFileName.substring(0, chestFileName.length() - YAML_EXTENSION_LENGTH);
-                    Boolean flagPlayerNotFound = true;
-                    for (OfflinePlayer player : Bukkit.getOfflinePlayers()) {
-                        // Search all the known players, load inventory, flag old file for deletion
-                        if (player.getName().toLowerCase().equals(playerName)) {
-                            flagPlayerNotFound = false;
-                            chests.put(player.getUniqueId(), InventoryIO.loadFromYaml(chestFile));
-                            chestFile.deleteOnExit();
-                        }
-                    }
-                    if (flagPlayerNotFound) {
-                        logger.log(Level.WARNING, "Couldn't load chest file: " + chestFileName);
-                    }
-                }
-            } catch (Exception e) {
+					UUID playerUUID = UUID.fromString(chestFileName.substring(0, chestFileName.length() - YAML_EXTENSION_LENGTH));
+					chests.put(playerUUID, InventoryIO.loadFromYaml(chestFile));
+				} catch (IllegalArgumentException e){
+					// Assume that the filename isn't a UUID, and is therefore an old player-name chest
+					String playerName = chestFileName.substring(0, chestFileName.length() - YAML_EXTENSION_LENGTH);
+					Boolean flagPlayerNotFound = true;
+					for (OfflinePlayer player : Bukkit.getOfflinePlayers()) {
+						// Search all the known players, load inventory, flag old file for deletion
+						if (player.getName().toLowerCase().equals(playerName)) {
+							flagPlayerNotFound = false;
+							chests.put(player.getUniqueId(), InventoryIO.loadFromYaml(chestFile));
+							chestFile.deleteOnExit();
+						}
+					}
+					if (flagPlayerNotFound) {
+						logger.log(Level.WARNING, "Couldn't load chest file: " + chestFileName);
+					}
+				}
+			} catch (Exception e) {
 				logger.log(Level.WARNING, "Couldn't load chest file: " + chestFileName);
 			}
 		}

@@ -4,10 +4,10 @@ import java.io.File;
 import java.util.List;
 import java.util.logging.Logger;
 
-import net.sradonia.bukkit.alphachest.commands.CommandChest;
-import net.sradonia.bukkit.alphachest.commands.CommandClearChest;
-import net.sradonia.bukkit.alphachest.commands.CommandSaveChests;
-import net.sradonia.bukkit.alphachest.commands.CommandWorkbench;
+import net.sradonia.bukkit.alphachest.commands.ChestCommand;
+import net.sradonia.bukkit.alphachest.commands.ClearChestCommand;
+import net.sradonia.bukkit.alphachest.commands.SaveChestsCommand;
+import net.sradonia.bukkit.alphachest.commands.WorkbenchCommand;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -47,10 +47,10 @@ public class AlphaChestPlugin extends JavaPlugin implements Listener {
 		dropOnDeath = getConfig().getBoolean("dropOnDeath");
 
 		// Set command executors
-		getCommand("chest").setExecutor(new CommandChest(chestManager));
-		getCommand("clearchest").setExecutor(new CommandClearChest(chestManager));
-		getCommand("savechests").setExecutor(new CommandSaveChests(chestManager));
-		getCommand("workbench").setExecutor(new CommandWorkbench());
+		getCommand("chest").setExecutor(new ChestCommand(chestManager));
+		getCommand("clearchest").setExecutor(new ClearChestCommand(chestManager));
+		getCommand("savechests").setExecutor(new SaveChestsCommand(chestManager));
+		getCommand("workbench").setExecutor(new WorkbenchCommand());
 
 		// Register events
 		getServer().getPluginManager().registerEvents(this, this);

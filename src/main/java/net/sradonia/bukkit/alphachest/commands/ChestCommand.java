@@ -13,11 +13,11 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
-public class CommandChest implements CommandExecutor {
+public class ChestCommand implements CommandExecutor {
 	
 	private final VirtualChestManager chestManager;
 
-	public CommandChest(VirtualChestManager chestManager) {
+	public ChestCommand(VirtualChestManager chestManager) {
 		this.chestManager = chestManager;
 	}
 	

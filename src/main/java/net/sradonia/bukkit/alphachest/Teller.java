@@ -19,10 +19,6 @@ public class Teller {
 		this.plugin = plugin;
 	}
 	
-	public AlphaChestPlugin getPlugin() {
-		return plugin;
-	}
-	
 	public enum Type {
 		INFO, SUCCESS, WARNING, ERROR, MISC;
 	}

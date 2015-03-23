@@ -4,12 +4,13 @@ import java.io.File;
 import java.util.List;
 import java.util.logging.Logger;
 
-import net.sradonia.bukkit.alphachest.commands.ChestCommands;
+import net.sradonia.bukkit.alphachest.commands.ChestCommand;
+import net.sradonia.bukkit.alphachest.commands.ClearChestCommand;
+import net.sradonia.bukkit.alphachest.commands.SaveChestsCommand;
 import net.sradonia.bukkit.alphachest.commands.WorkbenchCommand;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.inventory.Inventory;
@@ -17,9 +18,13 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class AlphaChestPlugin extends JavaPlugin implements Listener {
+	
 	private Logger logger;
 
 	private VirtualChestManager chestManager;
+	
+	private Teller teller;
+	
 	private boolean clearOnDeath;
 	private boolean dropOnDeath;
 
@@ -27,23 +32,24 @@ public class AlphaChestPlugin extends JavaPlugin implements Listener {
 	public void onEnable() {
 		logger = getLogger();
 
-		// Save default config.yml
-		if (!new File(getDataFolder(), "config.yml").exists())
-			saveDefaultConfig();
+		// Save a copy of the default config.yml if one is not there
+		saveDefaultConfig();
 
 		// Initialize
 		File chestFolder = new File(getDataFolder(), "chests");
 		chestManager = new VirtualChestManager(chestFolder, getLogger());
+		
+		teller = new Teller(this);
+		teller.init();
 
 		// Load settings
 		clearOnDeath = getConfig().getBoolean("clearOnDeath");
 		dropOnDeath = getConfig().getBoolean("dropOnDeath");
 
 		// Set command executors
-		final ChestCommands chestCommands = new ChestCommands(chestManager);
-		getCommand("chest").setExecutor(chestCommands);
-		getCommand("clearchest").setExecutor(chestCommands);
-		getCommand("savechests").setExecutor(chestCommands);
+		getCommand("chest").setExecutor(new ChestCommand(chestManager));
+		getCommand("clearchest").setExecutor(new ClearChestCommand(chestManager));
+		getCommand("savechests").setExecutor(new SaveChestsCommand(chestManager));
 		getCommand("workbench").setExecutor(new WorkbenchCommand());
 
 		// Register events
@@ -56,7 +62,7 @@ public class AlphaChestPlugin extends JavaPlugin implements Listener {
 				public void run() {
 					int savedChests = chestManager.save();
 					if (savedChests > 0 && !getConfig().getBoolean("silentAutosave"))
-						logger.info("auto-saved " + savedChests + " chests");
+						logger.info("Auto-saved " + savedChests + " chests");
 				}
 			}, autosaveInterval, autosaveInterval);
 		}
@@ -65,13 +71,13 @@ public class AlphaChestPlugin extends JavaPlugin implements Listener {
 	@Override
 	public void onDisable() {
 		int savedChests = chestManager.save();
-		logger.info("saved " + savedChests + " chests");
+		logger.info("Saved " + savedChests + " chests");
 	}
 
 	/**
 	 * Handles a player's death and clears the chest or drops its contents depending on configuration and permissions.
 	 */
-	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+	@EventHandler(ignoreCancelled = true)
 	public void onPlayerDeath(final PlayerDeathEvent event) {
 		final Player player = event.getEntity();
 
@@ -96,6 +102,7 @@ public class AlphaChestPlugin extends JavaPlugin implements Listener {
 				drops.add(chest.getItem(i));
 			}
 		}
+		
 		if (clear) {
 			chestManager.removeChest(player.getUniqueId());
 		}

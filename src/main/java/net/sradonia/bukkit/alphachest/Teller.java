@@ -5,30 +5,67 @@ import org.bukkit.command.CommandSender;
 
 public class Teller {
 
+	private final AlphaChestPlugin plugin;
+	
+	private static String prefix;
+	
+	private static String infoColor;
+	private static String successColor;
+	private static String warningColor;
+	private static String errorColor;
+	private static String miscColor;
+	
+	public Teller(AlphaChestPlugin plugin) {
+		this.plugin = plugin;
+	}
+	
 	public enum Type {
-		Info, Success, Warning, Error, Misc;
+		INFO, SUCCESS, WARNING, ERROR, MISC;
+	}
+	
+	/**
+	 * Initializes the Teller prefix and colors.
+	 */
+	public void init() {
+		Teller.prefix = plugin.getConfig().getString("messages.prefix", "&0[&7AlphaChest&0]");
+		
+		Teller.infoColor = plugin.getConfig().getString("messages.colors.info", "&f");
+		Teller.successColor = plugin.getConfig().getString("messages.colors.success", "&2");
+		Teller.warningColor = plugin.getConfig().getString("messages.colors.warning", "&6");
+		Teller.errorColor = plugin.getConfig().getString("messages.colors.error", "&4");
+		Teller.miscColor = plugin.getConfig().getString("messages.colors.misc", "&1");
 	}
 
+	/**
+	 * Sends a formatted and colored message to a specified CommandSender with a
+	 * given type and message.
+	 * 
+	 * @param sender the CommandSender to message
+	 * @param type the type of tell message to send
+	 * @param message the message to send
+	 */
 	public static void tell(CommandSender sender, Type type, String message) {
-		ChatColor color = ChatColor.WHITE;
+		String color = "&f";
 		switch (type) {
-		case Info:
-			color = ChatColor.WHITE;
-			break;
-		case Success:
-			color = ChatColor.DARK_GREEN;
-			break;
-		case Warning:
-			color = ChatColor.GOLD;
-			break;
-		case Error:
-			color = ChatColor.DARK_RED;
-			break;
-		case Misc:
-			color = ChatColor.DARK_BLUE;
+			case INFO:
+				color = infoColor;
+				break;
+			case SUCCESS:
+				color = successColor;
+				break;
+			case WARNING:
+				color = warningColor;
+				break;
+			case ERROR:
+				color = errorColor;
+				break;
+			case MISC:
+				color = miscColor;
 		}
-
-		sender.sendMessage(ChatColor.BLACK + "[" + ChatColor.GRAY + "AlphaChest" + ChatColor.BLACK + "] " + color + message);
+		
+		String newMessage = prefix + " " + color + message;
+		newMessage = ChatColor.translateAlternateColorCodes('&', newMessage);
+		
+		sender.sendMessage(newMessage);
 	}
-
 }

@@ -18,15 +18,16 @@ import org.bukkit.inventory.ItemStack;
 public class InventoryIO {
 
 	/**
-	 * Loads an inventory from a plaintext file.
+	 * Loads an inventory from a plain-text file.
 	 * 
-	 * @param file
-	 *        the text file to load
+	 * @param file the text file to load
 	 * @return the loaded inventory
-	 * @throws IOException
-	 *         if the file could not be read
+	 * @throws IOException if the file could not be read
+	 * 
+	 * @deprecated use {@link #loadFromYaml} instead
 	 */
-	public static Inventory loadFromTextfile(File file) throws IOException {
+	@Deprecated
+	public static Inventory loadFromTextFile(File file) throws IOException {
 		final Inventory inventory = Bukkit.getServer().createInventory(null, 6 * 9);
 
 		final BufferedReader in = new BufferedReader(new FileReader(file));
@@ -57,13 +58,10 @@ public class InventoryIO {
 	/**
 	 * Loads an inventory from a YAML configuration file.
 	 * 
-	 * @param file
-	 *        the YAML file to load
+	 * @param file the YAML file to load
 	 * @return the loaded inventory
-	 * @throws IOException
-	 *         if the file could not be read
-	 * @throws InvalidConfigurationException
-	 *         if the file could not be parsed
+	 * @throws IOException if the file could not be read
+	 * @throws InvalidConfigurationException if the file could not be parsed
 	 */
 	public static Inventory loadFromYaml(File file) throws IOException, InvalidConfigurationException {
 		YamlConfiguration yaml = new Utf8YamlConfiguration();
@@ -85,14 +83,11 @@ public class InventoryIO {
 	}
 
 	/**
-	 * Save an inventory to a YAML configuration file.
+	 * Saves an inventory to a YAML configuration file.
 	 * 
-	 * @param inventory
-	 *        the inventory to save
-	 * @param file
-	 *        the YAML file to write
-	 * @throws IOException
-	 *         if the file could not be written
+	 * @param inventory the inventory to save
+	 * @param file the YAML file to write
+	 * @throws IOException if the file could not be written
 	 */
 	public static void saveToYaml(Inventory inventory, File file) throws IOException {
 		YamlConfiguration yaml = new Utf8YamlConfiguration();

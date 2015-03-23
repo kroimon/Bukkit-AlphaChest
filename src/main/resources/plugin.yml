@@ -1,50 +1,54 @@
 name: ${project.name}
-main: net.sradonia.bukkit.alphachest.AlphaChestPlugin
 version: ${project.version}
+description: Plugin that allows you to have virtual private chests.
 author: kroimon
-description: >
-             Plugin that allows you to have virtual private chests.
+
+main: net.sradonia.bukkit.alphachest.AlphaChestPlugin
+database: false
 
 commands:
-    chest:
-        description: Opens a virtual player-specific chest.
-        usage: |
-              /<command> - Opens your private chest.
-              /<command> [player] - Opens someone else's chest.
-    clearchest:
-        description: Clears the contents of your AlphaChest.
-        usage: |
-              /<command> - Clears your private chest.
-              /<command> [player] - Clears someone else's chest.
-    savechests:
-        description: Saves all AlphaChests to disk.
-        permission: alphachest.save
-    workbench:
-        aliases: [craft, craftbox, craftingbox]
-        description: Opens a virtual workbench.
-        permission: alphachest.workbench
+  chest:
+    description: Opens a virtual player-specific chest.
+    usage: |
+      /<command> - Opens your private chest.
+      /<command> [player] - Opens someone else's chest.
+  clearchest:
+    description: Clears the contents of your AlphaChest.
+    usage: |
+      /<command> - Clears your private chest.
+      /<command> [player] - Clears someone else's chest.
+  savechests:
+    description: Saves all AlphaChests to disk.
+    permission: alphachest.save
+  workbench:
+    aliases: [craft, craftbox, craftingbox]
+    description: Opens a virtual workbench.
+    permission: alphachest.workbench
 
 permissions:
-    alphachest.*:
-        description: Gives access to the virtual chest and workbench.
-        children:
-            alphachest.chest: true
-            alphachest.workbench: true
-    alphachest.chest:
-        description: Gives access to the virtual chest.
-    alphachest.workbench:
-        description: Gives access to the virtual workbench.
+  alphachest.*:
+    description: Gives access to the virtual chest and workbench.
+    children:
+      alphachest.chest: true
+      alphachest.workbench: true
+  alphachest.chest:
+    description: Gives access to the virtual chest.
+  alphachest.workbench:
+    description: Gives access to the virtual workbench.
+    
+  alphachest.chest.creativeMode:
+    description: Allows a player to open their virtual chest in creative mode.
 
-    alphachest.keepOnDeath:
-        description: Players with this permission keep the contents of their virtual chest on death.
-    alphachest.dropOnDeath:
-        description: Players with this permission drop the contents of their virtual chest on death.
-    alphachest.clearOnDeath:
-        description: Players with this permission lose the contents of their virtual chest on death.
+  alphachest.keepOnDeath:
+    description: Players with this permission keep the contents of their virtual chest on death.
+  alphachest.dropOnDeath:
+    description: Players with this permission drop the contents of their virtual chest on death.
+  alphachest.clearOnDeath:
+    description: Players with this permission lose the contents of their virtual chest on death.
 
-    alphachest.admin:
-        description: Allows to open and clear someone else's chest.
-        default: op
-    alphachest.save:
-        description: Allows to save all virtual chests.
-        default: op
+  alphachest.admin:
+    description: Allows to open and clear someone else's chest.
+    default: op
+  alphachest.save:
+    description: Allows to save all virtual chests.
+    default: op

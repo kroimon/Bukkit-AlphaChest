@@ -3,6 +3,7 @@ package net.sradonia.bukkit.alphachest;
 import java.io.*;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.UUID;
 import java.util.logging.Level;
@@ -13,12 +14,13 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.inventory.Inventory;
 
 public class VirtualChestManager {
+	
 	private static final String YAML_CHEST_EXTENSION = ".chest.yml";
 	private static final int YAML_EXTENSION_LENGTH = YAML_CHEST_EXTENSION.length();
 
 	private final File dataFolder;
 	private final Logger logger;
-	private final HashMap<UUID, Inventory> chests;
+	private final Map<UUID, Inventory> chests;
 
 	public VirtualChestManager(File dataFolder, Logger logger) {
 		this.logger = logger;
@@ -67,7 +69,7 @@ public class VirtualChestManager {
 			}
 		}
 
-		logger.info("loaded " + chests.size() + " chests");
+		logger.info("Loaded " + chests.size() + " chests");
 	}
 
 	/**
@@ -91,7 +93,6 @@ public class VirtualChestManager {
 				// Chest got removed, so we have to delete the file.
 				chestFile.delete();
 				chestIterator.remove();
-
 			} else {
 				try {
 					// Write the chest file in YAML format
@@ -110,8 +111,7 @@ public class VirtualChestManager {
 	/**
 	 * Gets a player's virtual chest.
 	 * 
-	 * @param playerUUID
-	 *        the UUID of the player
+	 * @param playerUUID the UUID of the player
 	 * @return the player's virtual chest.
 	 */
 	public Inventory getChest(UUID playerUUID) {
@@ -128,8 +128,7 @@ public class VirtualChestManager {
 	/**
 	 * Clears a player's virtual chest.
 	 * 
-	 * @param playerUUID
-	 *        the UUID of the player
+	 * @param playerUUID the UUID of the player
 	 */
 	public void removeChest(UUID playerUUID) {
 		// Put a null to the map so we remember to delete the file when saving!

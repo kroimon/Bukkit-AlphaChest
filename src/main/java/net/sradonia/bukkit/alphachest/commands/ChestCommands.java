@@ -39,7 +39,7 @@ public class ChestCommands implements CommandExecutor {
 
 			// Prevent opening of the chest in Creative Mode
 			if (player.getGameMode().equals(GameMode.CREATIVE) && !player.hasPermission("alphachest.chest.creativeMode")) {
-				Teller.tell(sender, Type.Error, "You are not allowed to open your chest in Creative Mode!");
+				Teller.tell(sender, Type.ERROR, "You are not allowed to open your chest in Creative Mode!");
 				return true;
 			}
 
@@ -49,7 +49,7 @@ public class ChestCommands implements CommandExecutor {
 					Inventory chest = chestManager.getChest(((Player) sender).getUniqueId());
 					player.openInventory(chest);
 				} else {
-					Teller.tell(sender, Type.Error, "You are not allowed to use this command.");
+					Teller.tell(sender, Type.ERROR, "You are not allowed to use this command.");
 				}
 				return true;
 			} else if (args.length == 1) {
@@ -65,17 +65,17 @@ public class ChestCommands implements CommandExecutor {
 						}
 					}
 					if (flagNotFound) {
-						Teller.tell(sender, Type.Error, String.format("Chest for %s not found",args[0]));
+						Teller.tell(sender, Type.ERROR, String.format("Chest for %s not found",args[0]));
 					}
 				} else {
-					Teller.tell(sender, Type.Error, "You are not allowed to open other user's chests.");
+					Teller.tell(sender, Type.ERROR, "You are not allowed to open other user's chests.");
 				}
 				return true;
 			}
 
 			return false;
 		} else {
-			Teller.tell(sender, Type.Error, "Only players are able to open chests.");
+			Teller.tell(sender, Type.ERROR, "Only players are able to open chests.");
 			return true;
 		}
 	}
@@ -84,9 +84,9 @@ public class ChestCommands implements CommandExecutor {
 		if (args.length == 0 && sender instanceof Player) {
 			if (sender.hasPermission("alphachest.chest")) {
 				chestManager.removeChest(((Player) sender).getUniqueId());
-				Teller.tell(sender, Type.Success, "Successfully cleared your chest.");
+				Teller.tell(sender, Type.SUCCESS, "Successfully cleared your chest.");
 			} else {
-				Teller.tell(sender, Type.Error, "You are not allowed to use this command.");
+				Teller.tell(sender, Type.ERROR, "You are not allowed to use this command.");
 			}
 			return true;
 		} else if (args.length == 1) {
@@ -97,14 +97,14 @@ public class ChestCommands implements CommandExecutor {
 					if (target.getName().equalsIgnoreCase(args[0])) {
 						flagNotFound=false;
 						chestManager.removeChest(target.getUniqueId());
-						Teller.tell(sender, Type.Success, "Successfully cleared " + args[0] + "\'s chest.");
+						Teller.tell(sender, Type.SUCCESS, "Successfully cleared " + args[0] + "\'s chest.");
 					}
 				}
 				if (flagNotFound) {
-					Teller.tell(sender, Type.Error, String.format("Chest for %s not found",args[0]));
+					Teller.tell(sender, Type.ERROR, String.format("Chest for %s not found",args[0]));
 				}
 			} else {
-				Teller.tell(sender, Type.Error, "You are not allowed to clear other user's chests.");
+				Teller.tell(sender, Type.ERROR, "You are not allowed to clear other user's chests.");
 			}
 			return true;
 		} else {
@@ -115,9 +115,9 @@ public class ChestCommands implements CommandExecutor {
 	private boolean performSaveChestsCommand(CommandSender sender, String[] args) {
 		if (sender.hasPermission("alphachest.save")) {
 			int savedChests = chestManager.save();
-			Teller.tell(sender, Type.Success, "Saved " + savedChests + " chests.");
+			Teller.tell(sender, Type.SUCCESS, "Saved " + savedChests + " chests.");
 		} else {
-			Teller.tell(sender, Type.Error, "You are not allowed to use this command.");
+			Teller.tell(sender, Type.ERROR, "You are not allowed to use this command.");
 		}
 		return true;
 	}

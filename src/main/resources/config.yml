@@ -1,3 +1,16 @@
+# Settings related to plugin messages
+messages:
+  # The prefix to use for plugin messages
+  prefix: '&0[&7AlphaChest&0]'
+  
+  # The color to use for text for specific message types
+  colors:
+    info: '&f'
+    success: '&2'
+    warning: '&6'
+    error: '&4'
+    misc: '&1'
+
 # Interval (in minutes) the plugin should save the changed chests to disk.
 # Setting this to zero disables periodic saving. 
 autosave: 10

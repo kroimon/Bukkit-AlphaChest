@@ -19,10 +19,6 @@ public class Teller {
 		this.plugin = plugin;
 	}
 	
-	public AlphaChestPlugin getPlugin() {
-		return plugin;
-	}
-	
 	public enum Type {
 		INFO, SUCCESS, WARNING, ERROR, MISC;
 	}
@@ -50,6 +46,7 @@ public class Teller {
 	 */
 	public static void tell(CommandSender sender, Type type, String message) {
 		String color = "&f";
+
 		switch (type) {
 			case INFO:
 				color = infoColor;

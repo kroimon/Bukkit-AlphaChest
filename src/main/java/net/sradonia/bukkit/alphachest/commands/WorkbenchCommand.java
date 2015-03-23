@@ -10,16 +10,25 @@ import org.bukkit.entity.Player;
 
 public class WorkbenchCommand implements CommandExecutor {
 
+	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-		if (sender instanceof Player) {
-			if (sender.hasPermission("alphachest.workbench")) {
-				((Player) sender).openWorkbench(null, true);
-			} else {
-				Teller.tell(sender, Type.ERROR, "You're not allowed to use this command.");
+		if (command.getName().equalsIgnoreCase("workbench")) {
+			// Make sure the sender is a player
+			if (!(sender instanceof Player)) {
+				Teller.tell(sender, Type.ERROR, "Only players are able to open virtual workbenches.");
+				return true;
 			}
+				
+			Player player = (Player) sender;
+			
+			if (player.hasPermission("alphachest.workbench")) {
+				player.openWorkbench(null, true);
+			} else {
+				Teller.tell(sender, Type.ERROR, "You are not allowed to use this command.");
+			}
+			
 			return true;
 		}
 		return false;
 	}
-
 }

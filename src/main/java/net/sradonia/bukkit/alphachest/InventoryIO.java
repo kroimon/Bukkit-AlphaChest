@@ -24,7 +24,7 @@ public class InventoryIO {
 	 * @return the loaded inventory
 	 * @throws IOException if the file could not be read
 	 * 
-	 * @deprecated use {@link #loadFromYaml()} instead
+	 * @deprecated use {@link #loadFromYaml} instead
 	 */
 	@Deprecated
 	public static Inventory loadFromTextFile(File file) throws IOException {

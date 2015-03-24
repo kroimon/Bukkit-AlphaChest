@@ -24,7 +24,7 @@ public class AlphaChestPlugin extends JavaPlugin {
 		// Save a copy of the default config.yml if one doesn't already exist
 		saveDefaultConfig();
 
-        // Initialize some classes and objects
+        // Initialize some classes & objects
         logger = getLogger();
 
 		File chestFolder = new File(getDataFolder(), "chests");

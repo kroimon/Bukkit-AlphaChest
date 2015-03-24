@@ -1,7 +1,6 @@
 package net.sradonia.bukkit.alphachest.listeners;
 
-import net.sradonia.bukkit.alphachest.AlphaChestPlugin;
-import net.sradonia.bukkit.alphachest.VirtualChestManager;
+import java.util.List;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -10,7 +9,8 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.List;
+import net.sradonia.bukkit.alphachest.AlphaChestPlugin;
+import net.sradonia.bukkit.alphachest.VirtualChestManager;
 
 public class PlayerListener implements Listener {
 

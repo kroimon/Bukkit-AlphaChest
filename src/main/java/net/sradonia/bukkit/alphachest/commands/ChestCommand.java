@@ -29,11 +29,13 @@ public class ChestCommand implements CommandExecutor {
 	 */
 	private OfflinePlayer findOfflinePlayerByName(String name) {
 		OfflinePlayer[] offlinePlayers = Bukkit.getOfflinePlayers();
+
 		for (OfflinePlayer player : offlinePlayers) {
 			if (player.getName().equalsIgnoreCase(name)) {
 				return player;
 			}
 		}
+
 		return null;
 	}
 	
@@ -68,6 +70,7 @@ public class ChestCommand implements CommandExecutor {
 					// Open someone else's chest
 					if (player.hasPermission("alphachest.admin")) {
 						OfflinePlayer target = findOfflinePlayerByName(args[0]);
+
 						if (target != null) {
 							Inventory chest = chestManager.getChest(target.getUniqueId());
 							player.openInventory(chest);

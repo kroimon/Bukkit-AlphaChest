@@ -27,11 +27,13 @@ public class ClearChestCommand implements CommandExecutor {
 	 */
 	private OfflinePlayer findOfflinePlayerByName(String name) {
 		OfflinePlayer[] offlinePlayers = Bukkit.getOfflinePlayers();
+
 		for (OfflinePlayer player : offlinePlayers) {
 			if (player.getName().equalsIgnoreCase(name)) {
 				return player;
 			}
 		}
+
 		return null;
 	}
 	
@@ -59,6 +61,7 @@ public class ClearChestCommand implements CommandExecutor {
 				case 1:
 					if (sender.hasPermission("alphachest.admin")) {
 						OfflinePlayer target = findOfflinePlayerByName(args[0]);
+
 						if (target != null) {
 							chestManager.removeChest(target.getUniqueId());
 							Teller.tell(sender, Type.SUCCESS, "Successfully cleared " + args[0] + "\'s chest.");

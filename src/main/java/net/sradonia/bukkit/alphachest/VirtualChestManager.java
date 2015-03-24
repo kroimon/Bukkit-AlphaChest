@@ -42,6 +42,7 @@ public class VirtualChestManager {
 				return name.endsWith(YAML_CHEST_EXTENSION);
 			}
 		};
+
 		for (File chestFile : dataFolder.listFiles(filter)) {
 			String chestFileName = chestFile.getName();
 			try {
@@ -52,6 +53,7 @@ public class VirtualChestManager {
 					// Assume that the filename isn't a UUID, and is therefore an old player-name chest
 					String playerName = chestFileName.substring(0, chestFileName.length() - YAML_EXTENSION_LENGTH);
 					Boolean flagPlayerNotFound = true;
+
 					for (OfflinePlayer player : Bukkit.getOfflinePlayers()) {
 						// Search all the known players, load inventory, flag old file for deletion
 						if (player.getName().toLowerCase().equals(playerName)) {
@@ -60,6 +62,7 @@ public class VirtualChestManager {
 							chestFile.deleteOnExit();
 						}
 					}
+
 					if (flagPlayerNotFound) {
 						logger.log(Level.WARNING, "Couldn't load chest file: " + chestFileName);
 					}
@@ -83,12 +86,14 @@ public class VirtualChestManager {
 		dataFolder.mkdirs();
 
 		Iterator<Entry<UUID, Inventory>> chestIterator = chests.entrySet().iterator();
+
 		while (chestIterator.hasNext()) {
 			final Entry<UUID, Inventory> entry = chestIterator.next();
-			final UUID playerUUID = entry.getKey();
+			final UUID uuid = entry.getKey();
 			final Inventory chest = entry.getValue();
 
-			final File chestFile = new File(dataFolder, playerUUID.toString() + YAML_CHEST_EXTENSION);
+			final File chestFile = new File(dataFolder, uuid.toString() + YAML_CHEST_EXTENSION);
+
 			if (chest == null) {
 				// Chest got removed, so we have to delete the file.
 				chestFile.delete();
@@ -111,15 +116,15 @@ public class VirtualChestManager {
 	/**
 	 * Gets a player's virtual chest.
 	 * 
-	 * @param playerUUID the UUID of the player
+	 * @param uuid the UUID of the player
 	 * @return the player's virtual chest.
 	 */
-	public Inventory getChest(UUID playerUUID) {
-		Inventory chest = chests.get(playerUUID);
+	public Inventory getChest(UUID uuid) {
+		Inventory chest = chests.get(uuid);
 
 		if (chest == null) {
 			chest = Bukkit.getServer().createInventory(null, 6 * 9);
-			chests.put(playerUUID, chest);
+			chests.put(uuid, chest);
 		}
 
 		return chest;
@@ -128,11 +133,11 @@ public class VirtualChestManager {
 	/**
 	 * Clears a player's virtual chest.
 	 * 
-	 * @param playerUUID the UUID of the player
+	 * @param uuid the UUID of the player
 	 */
-	public void removeChest(UUID playerUUID) {
+	public void removeChest(UUID uuid) {
 		// Put a null to the map so we remember to delete the file when saving!
-		chests.put(playerUUID, null);
+		chests.put(uuid, null);
 	}
 
 	/**

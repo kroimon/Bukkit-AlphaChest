@@ -21,8 +21,8 @@ commands:
     description: Saves all AlphaChests to disk.
     permission: alphachest.save
   workbench:
-    aliases: [craft, craftbox, craftingbox]
     description: Opens a virtual workbench.
+    aliases: [craft, craftbox, craftingbox]
     permission: alphachest.workbench
 
 permissions:

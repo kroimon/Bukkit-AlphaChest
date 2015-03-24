@@ -14,138 +14,138 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.inventory.Inventory;
 
 public class VirtualChestManager {
-	
-	private static final String YAML_CHEST_EXTENSION = ".chest.yml";
-	private static final int YAML_EXTENSION_LENGTH = YAML_CHEST_EXTENSION.length();
 
-	private final File dataFolder;
-	private final Logger logger;
-	private final Map<UUID, Inventory> chests;
+    private static final String YAML_CHEST_EXTENSION = ".chest.yml";
+    private static final int YAML_EXTENSION_LENGTH = YAML_CHEST_EXTENSION.length();
 
-	public VirtualChestManager(File dataFolder, Logger logger) {
-		this.logger = logger;
-		this.dataFolder = dataFolder;
+    private final File dataFolder;
+    private final Logger logger;
+    private final Map<UUID, Inventory> chests;
 
-		this.chests = new HashMap<UUID, Inventory>();
+    public VirtualChestManager(File dataFolder, Logger logger) {
+        this.logger = logger;
+        this.dataFolder = dataFolder;
 
-		load();
-	}
+        this.chests = new HashMap<UUID, Inventory>();
 
-	/**
-	 * Loads all existing chests from the data folder.
-	 */
-	private void load() {
-		dataFolder.mkdirs();
+        load();
+    }
 
-		FilenameFilter filter = new FilenameFilter() {
-			public boolean accept(File dir, String name) {
-				return name.endsWith(YAML_CHEST_EXTENSION);
-			}
-		};
+    /**
+     * Loads all existing chests from the data folder.
+     */
+    private void load() {
+        dataFolder.mkdirs();
 
-		for (File chestFile : dataFolder.listFiles(filter)) {
-			String chestFileName = chestFile.getName();
-			try {
-				try {
-					UUID playerUUID = UUID.fromString(chestFileName.substring(0, chestFileName.length() - YAML_EXTENSION_LENGTH));
-					chests.put(playerUUID, InventoryIO.loadFromYaml(chestFile));
-				} catch (IllegalArgumentException e){
-					// Assume that the filename isn't a UUID, and is therefore an old player-name chest
-					String playerName = chestFileName.substring(0, chestFileName.length() - YAML_EXTENSION_LENGTH);
-					Boolean flagPlayerNotFound = true;
+        FilenameFilter filter = new FilenameFilter() {
+            public boolean accept(File dir, String name) {
+                return name.endsWith(YAML_CHEST_EXTENSION);
+            }
+        };
 
-					for (OfflinePlayer player : Bukkit.getOfflinePlayers()) {
-						// Search all the known players, load inventory, flag old file for deletion
-						if (player.getName().toLowerCase().equals(playerName)) {
-							flagPlayerNotFound = false;
-							chests.put(player.getUniqueId(), InventoryIO.loadFromYaml(chestFile));
-							chestFile.deleteOnExit();
-						}
-					}
+        for (File chestFile : dataFolder.listFiles(filter)) {
+            String chestFileName = chestFile.getName();
+            try {
+                try {
+                    UUID playerUUID = UUID.fromString(chestFileName.substring(0, chestFileName.length() - YAML_EXTENSION_LENGTH));
+                    chests.put(playerUUID, InventoryIO.loadFromYaml(chestFile));
+                } catch (IllegalArgumentException e) {
+                    // Assume that the filename isn't a UUID, and is therefore an old player-name chest
+                    String playerName = chestFileName.substring(0, chestFileName.length() - YAML_EXTENSION_LENGTH);
+                    Boolean flagPlayerNotFound = true;
 
-					if (flagPlayerNotFound) {
-						logger.log(Level.WARNING, "Couldn't load chest file: " + chestFileName);
-					}
-				}
-			} catch (Exception e) {
-				logger.log(Level.WARNING, "Couldn't load chest file: " + chestFileName);
-			}
-		}
+                    for (OfflinePlayer player : Bukkit.getOfflinePlayers()) {
+                        // Search all the known players, load inventory, flag old file for deletion
+                        if (player.getName().toLowerCase().equals(playerName)) {
+                            flagPlayerNotFound = false;
+                            chests.put(player.getUniqueId(), InventoryIO.loadFromYaml(chestFile));
+                            chestFile.deleteOnExit();
+                        }
+                    }
 
-		logger.info("Loaded " + chests.size() + " chests");
-	}
+                    if (flagPlayerNotFound) {
+                        logger.log(Level.WARNING, "Couldn't load chest file: " + chestFileName);
+                    }
+                }
+            } catch (Exception e) {
+                logger.log(Level.WARNING, "Couldn't load chest file: " + chestFileName);
+            }
+        }
 
-	/**
-	 * Saves all existing chests to the data folder.
-	 * 
-	 * @return the number of successfully written chests
-	 */
-	public int save() {
-		int savedChests = 0;
+        logger.info("Loaded " + chests.size() + " chests");
+    }
 
-		dataFolder.mkdirs();
+    /**
+     * Saves all existing chests to the data folder.
+     *
+     * @return the number of successfully written chests
+     */
+    public int save() {
+        int savedChests = 0;
 
-		Iterator<Entry<UUID, Inventory>> chestIterator = chests.entrySet().iterator();
+        dataFolder.mkdirs();
 
-		while (chestIterator.hasNext()) {
-			final Entry<UUID, Inventory> entry = chestIterator.next();
-			final UUID uuid = entry.getKey();
-			final Inventory chest = entry.getValue();
+        Iterator<Entry<UUID, Inventory>> chestIterator = chests.entrySet().iterator();
 
-			final File chestFile = new File(dataFolder, uuid.toString() + YAML_CHEST_EXTENSION);
+        while (chestIterator.hasNext()) {
+            final Entry<UUID, Inventory> entry = chestIterator.next();
+            final UUID uuid = entry.getKey();
+            final Inventory chest = entry.getValue();
 
-			if (chest == null) {
-				// Chest got removed, so we have to delete the file.
-				chestFile.delete();
-				chestIterator.remove();
-			} else {
-				try {
-					// Write the chest file in YAML format
-					InventoryIO.saveToYaml(chest, chestFile);
+            final File chestFile = new File(dataFolder, uuid.toString() + YAML_CHEST_EXTENSION);
 
-					savedChests++;
-				} catch (IOException e) {
-					logger.log(Level.WARNING, "Couldn't save chest file: " + chestFile.getName(), e);
-				}
-			}
-		}
+            if (chest == null) {
+                // Chest got removed, so we have to delete the file.
+                chestFile.delete();
+                chestIterator.remove();
+            } else {
+                try {
+                    // Write the chest file in YAML format
+                    InventoryIO.saveToYaml(chest, chestFile);
 
-		return savedChests;
-	}
+                    savedChests++;
+                } catch (IOException e) {
+                    logger.log(Level.WARNING, "Couldn't save chest file: " + chestFile.getName(), e);
+                }
+            }
+        }
 
-	/**
-	 * Gets a player's virtual chest.
-	 * 
-	 * @param uuid the UUID of the player
-	 * @return the player's virtual chest.
-	 */
-	public Inventory getChest(UUID uuid) {
-		Inventory chest = chests.get(uuid);
+        return savedChests;
+    }
 
-		if (chest == null) {
-			chest = Bukkit.getServer().createInventory(null, 6 * 9);
-			chests.put(uuid, chest);
-		}
+    /**
+     * Gets a player's virtual chest.
+     *
+     * @param uuid the UUID of the player
+     * @return the player's virtual chest.
+     */
+    public Inventory getChest(UUID uuid) {
+        Inventory chest = chests.get(uuid);
 
-		return chest;
-	}
+        if (chest == null) {
+            chest = Bukkit.getServer().createInventory(null, 6 * 9);
+            chests.put(uuid, chest);
+        }
 
-	/**
-	 * Clears a player's virtual chest.
-	 * 
-	 * @param uuid the UUID of the player
-	 */
-	public void removeChest(UUID uuid) {
-		// Put a null to the map so we remember to delete the file when saving!
-		chests.put(uuid, null);
-	}
+        return chest;
+    }
 
-	/**
-	 * Gets the number of virtual chests.
-	 * 
-	 * @return the number of virtual chests
-	 */
-	public int getChestCount() {
-		return chests.size();
-	}
+    /**
+     * Clears a player's virtual chest.
+     *
+     * @param uuid the UUID of the player
+     */
+    public void removeChest(UUID uuid) {
+        // Put a null to the map so we remember to delete the file when saving!
+        chests.put(uuid, null);
+    }
+
+    /**
+     * Gets the number of virtual chests.
+     *
+     * @return the number of virtual chests
+     */
+    public int getChestCount() {
+        return chests.size();
+    }
 }

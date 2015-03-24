@@ -17,8 +17,10 @@ public class Teller {
 	
 	public Teller(AlphaChestPlugin plugin) {
 		this.plugin = plugin;
+
+        init();
 	}
-	
+
 	public enum Type {
 		INFO, SUCCESS, WARNING, ERROR, MISC;
 	}
@@ -27,25 +29,24 @@ public class Teller {
 	 * Initializes the Teller prefix and colors.
 	 */
 	public void init() {
-		Teller.prefix = plugin.getConfig().getString("messages.prefix", "&0[&7AlphaChest&0]");
+		prefix = plugin.getConfig().getString("messages.prefix", "&0[&7AlphaChest&0]");
 		
-		Teller.infoColor = plugin.getConfig().getString("messages.colors.info", "&f");
-		Teller.successColor = plugin.getConfig().getString("messages.colors.success", "&2");
-		Teller.warningColor = plugin.getConfig().getString("messages.colors.warning", "&6");
-		Teller.errorColor = plugin.getConfig().getString("messages.colors.error", "&4");
-		Teller.miscColor = plugin.getConfig().getString("messages.colors.misc", "&1");
+		infoColor = plugin.getConfig().getString("messages.colors.info", "&f");
+		successColor = plugin.getConfig().getString("messages.colors.success", "&2");
+		warningColor = plugin.getConfig().getString("messages.colors.warning", "&6");
+		errorColor = plugin.getConfig().getString("messages.colors.error", "&4");
+		miscColor = plugin.getConfig().getString("messages.colors.misc", "&1");
 	}
 
 	/**
-	 * Sends a formatted and colored message to a specified CommandSender with a
-	 * given type and message.
+	 * Sends a formatted and colored message to a specified CommandSender with a given type and message.
 	 * 
 	 * @param sender the CommandSender to message
 	 * @param type the type of tell message to send
 	 * @param message the message to send
 	 */
 	public static void tell(CommandSender sender, Type type, String message) {
-		String color = "&f";
+		String color = "";
 
 		switch (type) {
 			case INFO:
@@ -64,9 +65,9 @@ public class Teller {
 				color = miscColor;
 		}
 		
-		String newMessage = prefix + " " + color + message;
-		newMessage = ChatColor.translateAlternateColorCodes('&', newMessage);
+		String parsedMsg = prefix + " " + ChatColor.RESET + color + message;
+        parsedMsg = ChatColor.translateAlternateColorCodes('&', parsedMsg);
 		
-		sender.sendMessage(newMessage);
+		sender.sendMessage(parsedMsg);
 	}
 }

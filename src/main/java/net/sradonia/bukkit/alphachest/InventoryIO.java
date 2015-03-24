@@ -34,24 +34,29 @@ public class InventoryIO {
 
 		String line;
 		int slot = 0;
+
 		while ((line = in.readLine()) != null) {
 			if (!line.equals("")) {
 				final String[] parts = line.split(":");
+
 				try {
 					int type = Integer.parseInt(parts[0]);
 					int amount = Integer.parseInt(parts[1]);
 					short damage = Short.parseShort(parts[2]);
+
 					if (type != 0) {
 						inventory.setItem(slot, new ItemStack(type, amount, damage));
 					}
 				} catch (NumberFormatException e) {
 					// ignore
 				}
+
 				++slot;
 			}
 		}
 
 		in.close();
+
 		return inventory;
 	}
 
@@ -64,13 +69,14 @@ public class InventoryIO {
 	 * @throws InvalidConfigurationException if the file could not be parsed
 	 */
 	public static Inventory loadFromYaml(File file) throws IOException, InvalidConfigurationException {
-		YamlConfiguration yaml = new Utf8YamlConfiguration();
+		YamlConfiguration yaml = new YamlConfiguration();
 		yaml.load(file);
 
 		int inventorySize = yaml.getInt("size", 6 * 9);
 		Inventory inventory = Bukkit.getServer().createInventory(null, inventorySize);
 
 		ConfigurationSection items = yaml.getConfigurationSection("items");
+
 		for (int slot = 0; slot < inventorySize; slot++) {
 			String slotString = String.valueOf(slot);
 			if (items.isItemStack(slotString)) {
@@ -90,12 +96,13 @@ public class InventoryIO {
 	 * @throws IOException if the file could not be written
 	 */
 	public static void saveToYaml(Inventory inventory, File file) throws IOException {
-		YamlConfiguration yaml = new Utf8YamlConfiguration();
+		YamlConfiguration yaml = new YamlConfiguration();
 
 		int inventorySize = inventory.getSize();
 		yaml.set("size", inventorySize);
 
 		ConfigurationSection items = yaml.createSection("items");
+
 		for (int slot = 0; slot < inventorySize; slot++) {
 			ItemStack stack = inventory.getItem(slot);
 			if (stack != null) {

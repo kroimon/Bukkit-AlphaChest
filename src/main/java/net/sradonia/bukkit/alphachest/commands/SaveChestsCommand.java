@@ -25,8 +25,10 @@ public class SaveChestsCommand implements CommandExecutor {
             } else {
                 Teller.tell(sender, Type.ERROR, "You are not allowed to use this command.");
             }
+
             return true;
         }
+
         return false;
     }
 }

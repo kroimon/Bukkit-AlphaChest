@@ -20,13 +20,11 @@ public class VirtualChestManager {
 
     private final File dataFolder;
     private final Logger logger;
-    private final Map<UUID, Inventory> chests;
+    private final Map<UUID, Inventory> chests = new HashMap<>();
 
     public VirtualChestManager(File dataFolder, Logger logger) {
         this.logger = logger;
         this.dataFolder = dataFolder;
-
-        this.chests = new HashMap<UUID, Inventory>();
 
         load();
     }
@@ -89,10 +87,10 @@ public class VirtualChestManager {
 
         while (chestIterator.hasNext()) {
             final Entry<UUID, Inventory> entry = chestIterator.next();
-            final UUID uuid = entry.getKey();
+            final UUID playerUUID = entry.getKey();
             final Inventory chest = entry.getValue();
 
-            final File chestFile = new File(dataFolder, uuid.toString() + YAML_CHEST_EXTENSION);
+            final File chestFile = new File(dataFolder, playerUUID.toString() + YAML_CHEST_EXTENSION);
 
             if (chest == null) {
                 // Chest got removed, so we have to delete the file.
@@ -116,15 +114,15 @@ public class VirtualChestManager {
     /**
      * Gets a player's virtual chest.
      *
-     * @param uuid the UUID of the player
+     * @param playerUUID the UUID of the player
      * @return the player's virtual chest.
      */
-    public Inventory getChest(UUID uuid) {
-        Inventory chest = chests.get(uuid);
+    public Inventory getChest(UUID playerUUID) {
+        Inventory chest = chests.get(playerUUID);
 
         if (chest == null) {
             chest = Bukkit.getServer().createInventory(null, 6 * 9);
-            chests.put(uuid, chest);
+            chests.put(playerUUID, chest);
         }
 
         return chest;

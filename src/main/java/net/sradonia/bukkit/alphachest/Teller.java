@@ -65,9 +65,9 @@ public class Teller {
                 color = miscColor;
         }
 
-        String parsedMsg = prefix + " " + ChatColor.RESET + color + message;
-        parsedMsg = ChatColor.translateAlternateColorCodes('&', parsedMsg);
+        String parsedMessage = prefix + " " + ChatColor.RESET + color + message;
+        parsedMessage = ChatColor.translateAlternateColorCodes('&', parsedMessage);
 
-        sender.sendMessage(parsedMsg);
+        sender.sendMessage(parsedMessage);
     }
 }

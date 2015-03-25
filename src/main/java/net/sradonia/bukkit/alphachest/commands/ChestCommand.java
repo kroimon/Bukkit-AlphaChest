@@ -22,12 +22,12 @@ public class ChestCommand implements CommandExecutor {
     }
 
     /**
-     * Searches for an offline player by their name.
+     * Searches for and retrieves an offline player by their name.
      *
      * @param name the name to search for
      * @return the found player or null
      */
-    private OfflinePlayer findOfflinePlayerByName(String name) {
+    private OfflinePlayer getOfflinePlayerByName(String name) {
         OfflinePlayer[] offlinePlayers = Bukkit.getOfflinePlayers();
 
         for (OfflinePlayer player : offlinePlayers) {
@@ -65,11 +65,12 @@ public class ChestCommand implements CommandExecutor {
                     } else {
                         Teller.tell(sender, Type.ERROR, "You are not allowed to use this command.");
                     }
+
                     return true;
                 case 1:
                     // Open someone else's chest
                     if (player.hasPermission("alphachest.admin")) {
-                        OfflinePlayer target = findOfflinePlayerByName(args[0]);
+                        OfflinePlayer target = getOfflinePlayerByName(args[0]);
 
                         if (target != null) {
                             Inventory chest = chestManager.getChest(target.getUniqueId());
@@ -80,11 +81,13 @@ public class ChestCommand implements CommandExecutor {
                     } else {
                         Teller.tell(player, Type.ERROR, "You are not allowed to open other user's chests.");
                     }
-                    return true;
-            }
 
-            return false;
+                    return true;
+                default:
+                    return false;
+            }
         }
+
         return false;
     }
 }

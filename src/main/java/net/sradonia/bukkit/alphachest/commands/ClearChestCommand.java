@@ -20,12 +20,12 @@ public class ClearChestCommand implements CommandExecutor {
     }
 
     /**
-     * Searches for an offline player by their name.
+     * Searches for and retrieves an offline player by their name.
      *
      * @param name the name to search for
      * @return the found player or null
      */
-    private OfflinePlayer findOfflinePlayerByName(String name) {
+    private OfflinePlayer getOfflinePlayerByName(String name) {
         OfflinePlayer[] offlinePlayers = Bukkit.getOfflinePlayers();
 
         for (OfflinePlayer player : offlinePlayers) {
@@ -60,7 +60,7 @@ public class ClearChestCommand implements CommandExecutor {
                     return true;
                 case 1:
                     if (sender.hasPermission("alphachest.admin")) {
-                        OfflinePlayer target = findOfflinePlayerByName(args[0]);
+                        OfflinePlayer target = getOfflinePlayerByName(args[0]);
 
                         if (target != null) {
                             chestManager.removeChest(target.getUniqueId());
@@ -77,6 +77,7 @@ public class ClearChestCommand implements CommandExecutor {
                     return false;
             }
         }
+
         return false;
     }
 }

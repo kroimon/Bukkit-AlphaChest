@@ -29,6 +29,7 @@ public class WorkbenchCommand implements CommandExecutor {
 
             return true;
         }
+
         return false;
     }
 }

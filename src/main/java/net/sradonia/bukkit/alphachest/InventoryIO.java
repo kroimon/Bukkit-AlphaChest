@@ -64,7 +64,7 @@ public class InventoryIO {
      *
      * @param file the YAML file to load
      * @return the loaded inventory
-     * @throws IOException if the file could not be read
+     * @throws IOException                   if the file could not be read
      * @throws InvalidConfigurationException if the file could not be parsed
      */
     public static Inventory loadFromYaml(File file) throws IOException, InvalidConfigurationException {
@@ -92,7 +92,7 @@ public class InventoryIO {
      * Saves an inventory to a YAML configuration file.
      *
      * @param inventory the inventory to save
-     * @param file the YAML file to write
+     * @param file      the YAML file to write
      * @throws IOException if the file could not be written
      */
     public static void saveToYaml(Inventory inventory, File file) throws IOException {

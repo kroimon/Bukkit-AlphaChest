@@ -33,30 +33,26 @@ public class ClearChestCommand implements CommandExecutor {
 
                     Player player = (Player) sender;
 
-                    // Make sure the player has permission to use this command
-                    if (!player.hasPermission("alphachest.admin.clearchest")) {
+                    if (player.hasPermission("alphachest.chest")) {
+                        chestManager.removeChest(player.getUniqueId());
+                        Teller.tell(player, Type.SUCCESS, "Successfully cleared your chest.");
+                    } else {
                         Teller.tell(player, Type.ERROR, "You are not allowed to use this command.");
-                        return true;
                     }
-
-                    chestManager.removeChest(player.getUniqueId());
-                    Teller.tell(player, Type.SUCCESS, "Successfully cleared your chest.");
 
                     return true;
                 case 1:
-                    // Make sure the sender has permission to use this command
-                    if (!sender.hasPermission("alphachest.admin.clearchest.others")) {
-                        Teller.tell(sender, Type.ERROR, "You are not allowed to use this command.");
-                        return true;
-                    }
+                    if (sender.hasPermission("alphachest.admin")) {
+                        OfflinePlayer target = BukkitUtil.getOfflinePlayerByName(args[0]);
 
-                    OfflinePlayer target = BukkitUtil.getOfflinePlayerByName(args[0]);
-
-                    if (target != null) {
-                        chestManager.removeChest(target.getUniqueId());
-                        Teller.tell(sender, Type.SUCCESS, "Successfully cleared " + args[0] + "\'s chest.");
+                        if (target != null) {
+                            chestManager.removeChest(target.getUniqueId());
+                            Teller.tell(sender, Type.SUCCESS, "Successfully cleared " + args[0] + "\'s chest.");
+                        } else {
+                            Teller.tell(sender, Type.ERROR, String.format("Chest for %s not found", args[0]));
+                        }
                     } else {
-                        Teller.tell(sender, Type.ERROR, String.format("Chest for %s not found", args[0]));
+                        Teller.tell(sender, Type.ERROR, "You are not allowed to clear other user's chests.");
                     }
 
                     return true;

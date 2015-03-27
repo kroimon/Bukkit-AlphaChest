@@ -43,7 +43,7 @@ public class VirtualChestManager {
             try {
                 try {
                     UUID playerUUID = UUID.fromString(chestFileName.substring(0, chestFileName.length() - YAML_EXTENSION_LENGTH));
-                    chests.put(playerUUID, InventoryIO.loadFromYaml(chestFile, playerUUID));
+                    chests.put(playerUUID, InventoryIO.loadFromYaml(chestFile));
                 } catch (IllegalArgumentException e) {
                     // Assume that the filename isn't a UUID, and is therefore an old player-name chest
                     String playerName = chestFileName.substring(0, chestFileName.length() - YAML_EXTENSION_LENGTH);
@@ -53,7 +53,7 @@ public class VirtualChestManager {
                         // Search all the known players, load inventory, flag old file for deletion
                         if (player.getName().equalsIgnoreCase(playerName)) {
                             flagPlayerNotFound = false;
-                            chests.put(player.getUniqueId(), InventoryIO.loadFromYaml(chestFile, player.getUniqueId()));
+                            chests.put(player.getUniqueId(), InventoryIO.loadFromYaml(chestFile));
                             chestFile.deleteOnExit();
                         }
                     }

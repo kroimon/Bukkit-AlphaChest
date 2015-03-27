@@ -5,8 +5,8 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
 import net.sradonia.bukkit.alphachest.Teller;
-import net.sradonia.bukkit.alphachest.VirtualChestManager;
 import net.sradonia.bukkit.alphachest.Teller.Type;
+import net.sradonia.bukkit.alphachest.VirtualChestManager;
 
 public class SaveChestsCommand implements CommandExecutor {
 

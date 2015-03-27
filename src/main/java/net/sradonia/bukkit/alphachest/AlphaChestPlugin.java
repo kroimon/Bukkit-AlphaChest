@@ -3,10 +3,10 @@ package net.sradonia.bukkit.alphachest;
 import java.io.File;
 import java.util.logging.Logger;
 
+import org.bukkit.plugin.java.JavaPlugin;
+
 import net.sradonia.bukkit.alphachest.commands.*;
 import net.sradonia.bukkit.alphachest.listeners.PlayerListener;
-
-import org.bukkit.plugin.java.JavaPlugin;
 
 public class AlphaChestPlugin extends JavaPlugin {
 

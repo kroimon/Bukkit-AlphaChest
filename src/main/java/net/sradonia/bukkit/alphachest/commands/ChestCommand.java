@@ -1,7 +1,5 @@
 package net.sradonia.bukkit.alphachest.commands;
 
-import net.sradonia.bukkit.alphachest.utils.BukkitUtil;
-import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
@@ -11,8 +9,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
 import net.sradonia.bukkit.alphachest.Teller;
-import net.sradonia.bukkit.alphachest.VirtualChestManager;
 import net.sradonia.bukkit.alphachest.Teller.Type;
+import net.sradonia.bukkit.alphachest.VirtualChestManager;
+import net.sradonia.bukkit.alphachest.utils.BukkitUtil;
 
 public class ChestCommand implements CommandExecutor {
 

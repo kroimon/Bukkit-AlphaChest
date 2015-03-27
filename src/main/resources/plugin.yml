@@ -17,9 +17,17 @@ commands:
     usage: |
       /<command> - Clears your private chest.
       /<command> [player] - Clears someone else's chest.
+  savechest:
+    description: Saves a specific player's AlphaChest to disk.
+    usage: /<command> <player> - Saves a specified player's virtual chest.
+    permission: alphachest.save
   savechests:
     description: Saves all AlphaChests to disk.
     permission: alphachest.save
+  disposal:
+    description: Opens a virtual disposal bin.
+    aliases: [trash, bin]
+    permission: alphachest.disposal
   workbench:
     description: Opens a virtual workbench.
     aliases: [craft, craftbox, craftingbox]
@@ -33,9 +41,11 @@ permissions:
       alphachest.workbench: true
   alphachest.chest:
     description: Gives access to the virtual chest.
+  alphachest.disposal:
+    description: Gives access to the virtual disposal bin.
   alphachest.workbench:
     description: Gives access to the virtual workbench.
-    
+
   alphachest.chest.creativeMode:
     description: Allows a player to open their virtual chest in creative mode.
 
@@ -50,5 +60,5 @@ permissions:
     description: Allows to open and clear someone else's chest.
     default: op
   alphachest.save:
-    description: Allows to save all virtual chests.
+    description: Allows to save virtual chests.
     default: op

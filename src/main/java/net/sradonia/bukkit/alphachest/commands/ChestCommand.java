@@ -1,5 +1,6 @@
 package net.sradonia.bukkit.alphachest.commands;
 
+import net.sradonia.bukkit.alphachest.utils.BukkitUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.OfflinePlayer;
@@ -19,24 +20,6 @@ public class ChestCommand implements CommandExecutor {
 
     public ChestCommand(VirtualChestManager chestManager) {
         this.chestManager = chestManager;
-    }
-
-    /**
-     * Searches for and retrieves an offline player by their name.
-     *
-     * @param name the name to search for
-     * @return the found player or null
-     */
-    private OfflinePlayer getOfflinePlayerByName(String name) {
-        OfflinePlayer[] offlinePlayers = Bukkit.getOfflinePlayers();
-
-        for (OfflinePlayer player : offlinePlayers) {
-            if (player.getName().equalsIgnoreCase(name)) {
-                return player;
-            }
-        }
-
-        return null;
     }
 
     @Override
@@ -70,7 +53,7 @@ public class ChestCommand implements CommandExecutor {
                 case 1:
                     // Open someone else's chest
                     if (player.hasPermission("alphachest.admin")) {
-                        OfflinePlayer target = getOfflinePlayerByName(args[0]);
+                        OfflinePlayer target = BukkitUtil.getOfflinePlayerByName(args[0]);
 
                         if (target != null) {
                             Inventory chest = chestManager.getChest(target.getUniqueId());
@@ -83,9 +66,9 @@ public class ChestCommand implements CommandExecutor {
                     }
 
                     return true;
-                default:
-                    return false;
             }
+
+            return false;
         }
 
         return false;

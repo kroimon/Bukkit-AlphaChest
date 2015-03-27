@@ -39,7 +39,7 @@ public class PlayerListener implements Listener {
         boolean drop = dropOnDeath;
         boolean clear = dropOnDeath || clearOnDeath;
 
-        if (player.hasPermission("alphachest.keepOnDeath")) {
+        if (player.hasPermission("alphachest.death.keep")) {
             drop = false;
             clear = false;
         } else if (player.hasPermission("alphachest.dropOnDeath")) {

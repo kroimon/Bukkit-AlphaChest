@@ -3,10 +3,7 @@ package net.sradonia.bukkit.alphachest;
 import java.io.File;
 import java.util.logging.Logger;
 
-import net.sradonia.bukkit.alphachest.commands.ChestCommand;
-import net.sradonia.bukkit.alphachest.commands.ClearChestCommand;
-import net.sradonia.bukkit.alphachest.commands.SaveChestsCommand;
-import net.sradonia.bukkit.alphachest.commands.WorkbenchCommand;
+import net.sradonia.bukkit.alphachest.commands.*;
 import net.sradonia.bukkit.alphachest.listeners.PlayerListener;
 
 import org.bukkit.plugin.java.JavaPlugin;
@@ -35,6 +32,7 @@ public class AlphaChestPlugin extends JavaPlugin {
         // Set the plugin's command executors
         getCommand("chest").setExecutor(new ChestCommand(chestManager));
         getCommand("clearchest").setExecutor(new ClearChestCommand(chestManager));
+        getCommand("disposal").setExecutor(new DisposalCommand(chestManager));
         getCommand("savechests").setExecutor(new SaveChestsCommand(chestManager));
         getCommand("workbench").setExecutor(new WorkbenchCommand());
 

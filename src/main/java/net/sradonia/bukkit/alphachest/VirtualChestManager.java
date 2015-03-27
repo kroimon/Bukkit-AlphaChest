@@ -1,11 +1,8 @@
 package net.sradonia.bukkit.alphachest;
 
 import java.io.*;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -46,17 +43,17 @@ public class VirtualChestManager {
             try {
                 try {
                     UUID playerUUID = UUID.fromString(chestFileName.substring(0, chestFileName.length() - YAML_EXTENSION_LENGTH));
-                    chests.put(playerUUID, InventoryIO.loadFromYaml(chestFile));
+                    chests.put(playerUUID, InventoryIO.loadFromYaml(chestFile, playerUUID));
                 } catch (IllegalArgumentException e) {
                     // Assume that the filename isn't a UUID, and is therefore an old player-name chest
                     String playerName = chestFileName.substring(0, chestFileName.length() - YAML_EXTENSION_LENGTH);
-                    Boolean flagPlayerNotFound = true;
+                    boolean flagPlayerNotFound = true;
 
                     for (OfflinePlayer player : Bukkit.getOfflinePlayers()) {
                         // Search all the known players, load inventory, flag old file for deletion
-                        if (player.getName().toLowerCase().equals(playerName)) {
+                        if (player.getName().equalsIgnoreCase(playerName)) {
                             flagPlayerNotFound = false;
-                            chests.put(player.getUniqueId(), InventoryIO.loadFromYaml(chestFile));
+                            chests.put(player.getUniqueId(), InventoryIO.loadFromYaml(chestFile, player.getUniqueId()));
                             chestFile.deleteOnExit();
                         }
                     }
@@ -112,6 +109,31 @@ public class VirtualChestManager {
     }
 
     /**
+     * Saves a specified player's chest to the data folder.
+     *
+     * @param playerUUID the UUID of the player to save the chest of
+     */
+    public void saveChest(UUID playerUUID) {
+        dataFolder.mkdirs();
+
+        final String uuidString = playerUUID.toString();
+        final Inventory chest = chests.get(playerUUID);
+        final File chestFile = new File(dataFolder, uuidString + YAML_CHEST_EXTENSION);
+
+        if (chest == null) {
+            // Chest got removed, so we have to delete the file.
+            chestFile.delete();
+        } else {
+            try {
+                // Write the chest file in YAML format
+                InventoryIO.saveToYaml(chest, chestFile);
+            } catch (IOException e) {
+                logger.log(Level.WARNING, "Couldn't save chest file: " + chestFile.getName(), e);
+            }
+        }
+    }
+
+    /**
      * Gets a player's virtual chest.
      *
      * @param playerUUID the UUID of the player
@@ -131,11 +153,11 @@ public class VirtualChestManager {
     /**
      * Clears a player's virtual chest.
      *
-     * @param uuid the UUID of the player
+     * @param playerUUID the UUID of the player
      */
-    public void removeChest(UUID uuid) {
+    public void removeChest(UUID playerUUID) {
         // Put a null to the map so we remember to delete the file when saving!
-        chests.put(uuid, null);
+        chests.put(playerUUID, null);
     }
 
     /**

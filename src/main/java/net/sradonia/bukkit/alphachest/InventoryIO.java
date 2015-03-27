@@ -4,8 +4,10 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -67,12 +69,22 @@ public class InventoryIO {
      * @throws IOException if the file could not be read
      * @throws InvalidConfigurationException if the file could not be parsed
      */
-    public static Inventory loadFromYaml(File file) throws IOException, InvalidConfigurationException {
+    public static Inventory loadFromYaml(File file, UUID uuid) throws IOException, InvalidConfigurationException {
         YamlConfiguration yaml = new YamlConfiguration();
         yaml.load(file);
 
+        OfflinePlayer player = Bukkit.getOfflinePlayer(uuid);
+
         int inventorySize = yaml.getInt("size", 6 * 9);
-        Inventory inventory = Bukkit.getServer().createInventory(null, inventorySize);
+
+        Inventory inventory = null;
+
+        if (player.hasPlayedBefore()) {
+            String playerName = player.getName();
+            inventory = Bukkit.getServer().createInventory(null, inventorySize, playerName + "'s Chest");
+        } else {
+            inventory = Bukkit.getServer().createInventory(null, inventorySize);
+        }
 
         ConfigurationSection items = yaml.getConfigurationSection("items");
 

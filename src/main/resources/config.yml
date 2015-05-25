@@ -1,9 +1,9 @@
-# Settings related to plugin messages
 messages:
-  # The prefix to use for plugin messages
+  # The prefix to use for messages sent to players.
   prefix: '&0[&7AlphaChest&0]'
   
-  # The color to use for text for specific message types
+  # The color to for text when sending certain types of messages to players.
+  # Color codes reference: http://minecraft.gamepedia.com/Formatting_codes#Color_codes
   colors:
     info: '&f'
     success: '&2'
@@ -11,15 +11,19 @@ messages:
     error: '&4'
     misc: '&1'
 
-# Interval (in minutes) the plugin should save the changed chests to disk.
-# Setting this to zero disables periodic saving. 
-autosave: 10
-
-# Set this to true to suppress log messages while auto-saving chests.
-silentAutosave: false
-
-# Set this to true to clear a player's chest on death if he does not have the "alphachest.keepOnDeath" permission.
-clearOnDeath: false
-
-# Set this to true to drop the contents of the player's chest on death if he does not have the "alphachest.keepOnDeath" permission.
-dropOnDeath: false
+auto-save:
+  # Set this to false to disable auto-saving chests.
+  enabled: true
+  
+  # Interval (in minutes) the plugin should save the changed chests to disk.
+  interval: 10
+  
+  # Set this to true to suppress log messages while auto-saving chests.
+  silent: false
+  
+death:
+  # Set this to true to clear a player's chest on death if he does not have the "alphachest.death.keep" permission.
+  clear: false
+  
+  # Set this to true to drop the contents of the player's chest on death if he does not have the "alphachest.death.keep" permission.
+  drop: false

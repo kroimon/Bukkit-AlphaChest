@@ -4,7 +4,6 @@ description: Plugin that allows you to have virtual private chests.
 author: kroimon
 
 main: net.sradonia.bukkit.alphachest.AlphaChestPlugin
-database: false
 
 commands:
   chest:

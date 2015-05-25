@@ -1,21 +1,23 @@
-package net.sradonia.bukkit.alphachest;
+package net.sradonia.bukkit.alphachest.core;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
+import net.sradonia.bukkit.alphachest.AlphaChest;
+
 public class Teller {
 
-    private final AlphaChestPlugin plugin;
+    private final AlphaChest plugin;
 
-    private static String prefix;
+    private String prefix;
 
-    private static String infoColor;
-    private static String successColor;
-    private static String warningColor;
-    private static String errorColor;
-    private static String miscColor;
+    private String infoColor;
+    private String successColor;
+    private String warningColor;
+    private String errorColor;
+    private String miscColor;
 
-    public Teller(AlphaChestPlugin plugin) {
+    public Teller(AlphaChest plugin) {
         this.plugin = plugin;
 
         init();
@@ -28,7 +30,7 @@ public class Teller {
     /**
      * Initializes the Teller prefix and colors.
      */
-    public void init() {
+    private void init() {
         prefix = plugin.getConfig().getString("messages.prefix", "&0[&7AlphaChest&0]");
 
         infoColor = plugin.getConfig().getString("messages.colors.info", "&f");
@@ -41,11 +43,11 @@ public class Teller {
     /**
      * Sends a formatted and colored message to a specified CommandSender with a given type and message.
      *
-     * @param sender  the CommandSender to message
-     * @param type    the type of tell message to send
+     * @param sender the CommandSender to send the message to
+     * @param type the type of Teller message to send
      * @param message the message to send
      */
-    public static void tell(CommandSender sender, Type type, String message) {
+    public void tell(CommandSender sender, Type type, String message) {
         String color = "";
 
         switch (type) {
@@ -63,6 +65,7 @@ public class Teller {
                 break;
             case MISC:
                 color = miscColor;
+                break;
         }
 
         String parsedMessage = prefix + " " + ChatColor.RESET + color + message;

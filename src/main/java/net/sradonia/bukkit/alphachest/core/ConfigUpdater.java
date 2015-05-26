@@ -1,6 +1,11 @@
 package net.sradonia.bukkit.alphachest.core;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 
 import net.sradonia.bukkit.alphachest.AlphaChest;
 
@@ -41,11 +46,11 @@ public class ConfigUpdater {
     public void updateConfig() {
         switch (getConfigVersion()) {
             case 1:
-                plugin.getLogger().info("[ConfigUpdater] The config.yml was detected as being outdated! Attempting to update...");
+                plugin.getLogger().info("[Config] An update to the config.yml was found.");
                 updateToVersion2();
                 break;
             default:
-                plugin.getLogger().info("[ConfigUpdater] Update not required. The config.yml is already up-to-date.");
+                plugin.getLogger().info("[Config] Update not required. The config.yml is already up-to-date.");
                 break;
         }
     }
@@ -54,14 +59,7 @@ public class ConfigUpdater {
      * Updates the config.yml to version 2, which is required for AlphaChest 2.0.0 to work properly.
      */
     private void updateToVersion2() {
-        plugin.getLogger().info("[ConfigUpdater] Updating config.yml to latest version...");
-
-        // Get the user's current configuration settings from the old config
-        int autosaveInterval = plugin.getConfig().getInt("autosave", 10);
-        boolean silentAutosave = plugin.getConfig().getBoolean("silentAutosave", false);
-
-        boolean clearOnDeath = plugin.getConfig().getBoolean("clearOnDeath", false);
-        boolean dropOnDeath = plugin.getConfig().getBoolean("dropOnDeath", false);
+        plugin.getLogger().info("[Config] Updating the config.yml...");
 
         // Rename the old config and keep it as a backup
         File configFile = new File(plugin.getDataFolder(), "config.yml");
@@ -72,20 +70,6 @@ public class ConfigUpdater {
         // Create a new, fresh config and apply the old settings
         plugin.saveDefaultConfig();
 
-        if (autosaveInterval <= 0) {
-            // Auto-save disabling used to be identified by an interval set to 0
-            plugin.getConfig().set("auto-save.enabled", false);
-        }
-
-        plugin.getConfig().set("auto-save.interval", autosaveInterval);
-        plugin.getConfig().set("auto-save.silent", silentAutosave);
-
-        plugin.getConfig().set("death.clear", clearOnDeath);
-        plugin.getConfig().set("death.drop", dropOnDeath);
-
-        // Save the config
-        plugin.saveConfig();
-
-        plugin.getLogger().info("[ConfigUpdater] Update complete. The config.yml was successfully updated to the latest version.");
+        plugin.getLogger().info("[Config] Update of the config.yml complete.");
     }
 }

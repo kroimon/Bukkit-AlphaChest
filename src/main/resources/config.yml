@@ -1,3 +1,6 @@
+# DO NOT change the config-version option.
+config-version: 2
+
 messages:
   # The prefix to use for messages sent to players.
   prefix: '&0[&7AlphaChest&0]'

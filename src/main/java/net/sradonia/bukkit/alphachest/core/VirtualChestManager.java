@@ -147,17 +147,33 @@ public class VirtualChestManager {
      * Returns a player's virtual chest.
      *
      * @param uuid the UUID of the player to get the chest of
-     * @return the player's virtual chest
+     * @return the player's virtual chest or null
      */
     public Inventory getChest(UUID uuid) {
-        Inventory chest = chests.get(uuid);
+        return chests.get(uuid);
+    }
 
-        if (chest == null) {
-            chest = Bukkit.getServer().createInventory(null, 6 * 9);
-            chests.put(uuid, chest);
+    /**
+     * Returns a player's virtual chest. If forceCreate is set to true, a chest
+     * will be created for the player.
+     *
+     * @param uuid the UUID of the player to get the chest of
+     * @param forceCreate whether or not to create the chest if it doesn't already exist
+     * @return the found or created chest, or null
+     */
+    public Inventory getChest(UUID uuid, boolean forceCreate) {
+        if (forceCreate) {
+            Inventory chest = chests.get(uuid);
+
+            if (chest == null) {
+                chest = Bukkit.getServer().createInventory(null, 6 * 9);
+                chests.put(uuid, chest);
+            }
+
+            return chest;
         }
 
-        return chest;
+        return getChest(uuid);
     }
 
     /**

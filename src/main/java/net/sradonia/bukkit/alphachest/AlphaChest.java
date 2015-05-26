@@ -32,18 +32,50 @@ public class AlphaChest extends JavaPlugin {
         configUpdater = new ConfigUpdater(this);
         configUpdater.updateConfig();
 
+        // Register the plugin's events & commands
+        registerEvents();
+        registerCommands();
+
+        // Schedule an auto-save task
+        scheduleAutoSave();
+    }
+
+    @Override
+    public void onDisable() {
+        // Save all of the virtual chests
+        int savedChests = chestManager.save();
+        getLogger().info("Saved " + savedChests + " chests.");
+
+        // Cancel the auto-save task
+        getServer().getScheduler().cancelTasks(this);
+    }
+
+    /**
+     * Registers all of the plugin's events.
+     */
+    private void registerEvents() {
         // Register the plugin's events
         PluginManager pluginManager = getServer().getPluginManager();
 
         pluginManager.registerEvents(new DeathListener(this), this);
+    }
 
+    /**
+     * Registers all of the plugin's commands.
+     */
+    public void registerCommands() {
         // Register the plugin's commands
         getCommand("chest").setExecutor(new ChestCommand(this));
         getCommand("clearchest").setExecutor(new ClearChestCommand(this));
         getCommand("disposal").setExecutor(new DisposalCommand(this));
         getCommand("savechests").setExecutor(new SaveChestsCommand(this));
         getCommand("workbench").setExecutor(new WorkbenchCommand(this));
+    }
 
+    /**
+     * Schedules an auto-save task.
+     */
+    private void scheduleAutoSave() {
         // Schedule an auto-save task
         if (getConfig().getBoolean("auto-save.enabled")) {
             int autosaveInterval = getConfig().getInt("auto-save.interval") * 1200;
@@ -61,16 +93,6 @@ public class AlphaChest extends JavaPlugin {
                 }, autosaveInterval, autosaveInterval);
             }
         }
-    }
-
-    @Override
-    public void onDisable() {
-        // Save all of the virtual chests
-        int savedChests = chestManager.save();
-        getLogger().info("Saved " + savedChests + " chests.");
-
-        // Cancel the auto-save task
-        getServer().getScheduler().cancelTasks(this);
     }
 
     /**

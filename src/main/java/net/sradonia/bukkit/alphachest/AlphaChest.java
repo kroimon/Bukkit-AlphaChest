@@ -32,17 +32,9 @@ public class AlphaChest extends JavaPlugin {
         configUpdater = new ConfigUpdater(this);
         configUpdater.updateConfig();
 
-        // Register the plugin's events
-        PluginManager pluginManager = getServer().getPluginManager();
-
-        pluginManager.registerEvents(new DeathListener(this), this);
-
-        // Register the plugin's commands
-        getCommand("chest").setExecutor(new ChestCommand(this));
-        getCommand("clearchest").setExecutor(new ClearChestCommand(this));
-        getCommand("disposal").setExecutor(new DisposalCommand(this));
-        getCommand("savechests").setExecutor(new SaveChestsCommand(this));
-        getCommand("workbench").setExecutor(new WorkbenchCommand(this));
+        // Register the plugin's events & commands
+        registerEvents();
+        registerCommands();
 
         // Schedule an auto-save task
         scheduleAutoSave();
@@ -56,6 +48,28 @@ public class AlphaChest extends JavaPlugin {
 
         // Cancel the auto-save task
         getServer().getScheduler().cancelTasks(this);
+    }
+
+    /**
+     * Registers all of the plugin's events.
+     */
+    private void registerEvents() {
+        // Register the plugin's events
+        PluginManager pluginManager = getServer().getPluginManager();
+
+        pluginManager.registerEvents(new DeathListener(this), this);
+    }
+
+    /**
+     * Registers all of the plugin's commands.
+     */
+    public void registerCommands() {
+        // Register the plugin's commands
+        getCommand("chest").setExecutor(new ChestCommand(this));
+        getCommand("clearchest").setExecutor(new ClearChestCommand(this));
+        getCommand("disposal").setExecutor(new DisposalCommand(this));
+        getCommand("savechests").setExecutor(new SaveChestsCommand(this));
+        getCommand("workbench").setExecutor(new WorkbenchCommand(this));
     }
 
     /**

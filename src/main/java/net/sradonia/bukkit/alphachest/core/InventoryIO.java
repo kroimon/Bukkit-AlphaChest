@@ -69,14 +69,13 @@ public class InventoryIO {
         YamlConfiguration yaml = YamlConfiguration.loadConfiguration(file);
 
         int inventorySize = yaml.getInt("size", 6 * 9);
-
         Inventory inventory = Bukkit.getServer().createInventory(null, inventorySize);
 
         ConfigurationSection items = yaml.getConfigurationSection("items");
 
         for (int slot = 0; slot < inventorySize; slot++) {
             String slotString = String.valueOf(slot);
-
+            
             if (items.isItemStack(slotString)) {
                 ItemStack itemStack = items.getItemStack(slotString);
                 inventory.setItem(slot, itemStack);

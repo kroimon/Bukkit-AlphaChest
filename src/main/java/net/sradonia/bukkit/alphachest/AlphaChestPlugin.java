@@ -11,6 +11,7 @@ import net.sradonia.bukkit.alphachest.listeners.PlayerListener;
 public class AlphaChestPlugin extends JavaPlugin {
 
     private Logger logger;
+    public static boolean useAsync;
 
     private VirtualChestManager chestManager;
 
@@ -26,7 +27,7 @@ public class AlphaChestPlugin extends JavaPlugin {
 
         File chestFolder = new File(getDataFolder(), "chests");
         chestManager = new VirtualChestManager(chestFolder, logger);
-
+        useAsync = getConfig().getBoolean("useAsync");
         teller = new Teller(this);
 
         // Set the plugin's command executors

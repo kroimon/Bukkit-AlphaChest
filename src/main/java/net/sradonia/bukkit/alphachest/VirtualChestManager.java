@@ -84,10 +84,39 @@ public class VirtualChestManager {
         dataFolder.mkdirs();
 
         Iterator<Entry<UUID, Inventory>> chestIterator = chests.entrySet().iterator();
-        AsyncSaver saver = new AsyncSaver(dataFolder, chestIterator);
-        saver.run();
 
-        return saver.getSavedChests();
+        if (AlphaChestPlugin.useAsync){
+            AsyncSaver saver = new AsyncSaver(dataFolder, chestIterator);
+            saver.run();
+            return saver.getSavedChests();
+        }
+        else{
+            int savedChests = 0;
+            while (chestIterator.hasNext()) {
+                final Map.Entry<UUID, Inventory> entry = chestIterator.next();
+                final UUID playerUUID = entry.getKey();
+                final Inventory chest = entry.getValue();
+
+                final File chestFile = new File(dataFolder, playerUUID.toString() + ".chest.yml");
+
+                if (chest == null) {
+                    // Chest got removed, so we have to delete the file.
+                    chestFile.delete();
+                    chestIterator.remove();
+                } else {
+                    try {
+                        // Write the chest file in YAML format
+                        InventoryIO.saveToYaml(chest, chestFile);
+
+                        savedChests++;
+                    } catch (IOException e) {
+                        System.out.println("Couldn't save chest file: " + chestFile.getName());
+                    }
+                }
+            }
+            return savedChests;
+        }
+
     }
 
     /**

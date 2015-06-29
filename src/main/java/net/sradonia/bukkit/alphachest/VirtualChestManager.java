@@ -3,11 +3,12 @@ package net.sradonia.bukkit.alphachest;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.UUID;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -83,17 +84,60 @@ public class VirtualChestManager {
     public int save() {
         dataFolder.mkdirs();
 
-        Iterator<Entry<UUID, Inventory>> chestIterator = chests.entrySet().iterator();
+        final Set<Entry<UUID, Inventory>> chestIterator = Collections.synchronizedSet(chests.entrySet());
 
         if (AlphaChestPlugin.useAsync){
-            AsyncSaver saver = new AsyncSaver(dataFolder, chestIterator);
-            saver.run();
-            return saver.getSavedChests();
+            //AsyncSaver saver = new AsyncSaver(dataFolder, chestIterator);
+            //new Thread(saver).start();
+
+            //return saver.getSavedChests();
+
+            ExecutorService pool = Executors.newFixedThreadPool(2); // creates a pool of threads for the Future to draw from
+
+            Future<Integer> value = pool.submit(new Callable<Integer>() {
+                @Override
+                public Integer call() {
+                    int savedChests = 0;
+                    Iterator<Entry<UUID,Inventory>> iterator = chestIterator.iterator();
+                    while (iterator.hasNext()) {
+                        final Map.Entry<UUID, Inventory> entry =  iterator.next();
+                        final UUID playerUUID = entry.getKey();
+                        final Inventory chest = entry.getValue();
+
+                        final File chestFile = new File(dataFolder, playerUUID.toString() + ".chest.yml");
+
+                        if (chest == null) {
+                            // Chest got removed, so we have to delete the file.
+                            chestFile.delete();
+                            iterator.remove();
+                        } else {
+                            try {
+                                // Write the chest file in YAML format
+                                InventoryIO.saveToYaml(chest, chestFile);
+
+                                savedChests++;
+                            } catch (IOException e) {
+                                System.out.println("Couldn't save chest file: " + chestFile.getName());
+                            }
+                        }
+                    }
+                    return savedChests;
+                }
+            });
+
+            try{
+                return value.get();
+            }catch(Exception e){
+                Bukkit.getLogger().severe("Could not save chests!");
+                e.printStackTrace();
+            }
+            return 0;
         }
         else{
             int savedChests = 0;
-            while (chestIterator.hasNext()) {
-                final Map.Entry<UUID, Inventory> entry = chestIterator.next();
+            Iterator<Entry<UUID,Inventory>> iterator = chestIterator.iterator();
+            while (iterator.hasNext()) {
+                final Map.Entry<UUID, Inventory> entry =  iterator.next();
                 final UUID playerUUID = entry.getKey();
                 final Inventory chest = entry.getValue();
 
@@ -102,7 +146,7 @@ public class VirtualChestManager {
                 if (chest == null) {
                     // Chest got removed, so we have to delete the file.
                     chestFile.delete();
-                    chestIterator.remove();
+                    iterator.remove();
                 } else {
                     try {
                         // Write the chest file in YAML format

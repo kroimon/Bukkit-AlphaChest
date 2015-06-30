@@ -41,13 +41,13 @@ public class DeathListener implements Listener {
         boolean drop = dropOnDeath;
         boolean clear = dropOnDeath || clearOnDeath;
 
-        if (player.hasPermission("alphachest.death.keep")) {
+        if (player.hasPermission("alphachest.keepOnDeath")) {
             drop = false;
             clear = false;
-        } else if (player.hasPermission("alphachest.death.drop")) {
+        } else if (player.hasPermission("alphachest.dropOnDeath")) {
             drop = true;
             clear = true;
-        } else if (player.hasPermission("alphachest.death.clear")) {
+        } else if (player.hasPermission("alphachest.clearOnDeath")) {
             drop = false;
             clear = true;
         }

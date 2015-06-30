@@ -27,15 +27,6 @@ public class ConfigUpdater {
     }
 
     /**
-     * Returns the current, most up-to-date config version.
-     *
-     * @return the current latest config version
-     */
-    public int getLatestConfigVersion() {
-        return CONFIG_VERSION;
-    }
-
-    /**
      * Checks the config.yml and updates it if it's outdated.
      */
     public void updateConfig() {

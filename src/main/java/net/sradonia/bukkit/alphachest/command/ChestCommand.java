@@ -43,7 +43,7 @@ public class ChestCommand implements CommandExecutor {
             Player player = (Player) sender;
 
             // Prevent opening of the chest in Creative Mode
-            if (player.getGameMode() == GameMode.CREATIVE && !player.hasPermission("alphachest.chest.creative")) {
+            if (player.getGameMode() == GameMode.CREATIVE && !player.hasPermission("alphachest.chest.creativeMode")) {
                 teller.tell(sender, Type.ERROR, "You are not allowed to open your chest in Creative Mode!");
                 return true;
             }

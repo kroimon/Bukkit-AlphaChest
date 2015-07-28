@@ -17,7 +17,7 @@ public final class BukkitUtil {
     private BukkitUtil() {}
 
     /**
-     * Searches for and returns a player by their name.
+     * Returns a player by their name.
      *
      * @param name the name to search for
      * @return the found player or null
@@ -25,10 +25,10 @@ public final class BukkitUtil {
     public static Player getPlayer(String name) {
         Validate.notNull(name, "Name cannot be null");
 
-        Collection<? extends Player> players = Bukkit.getOnlinePlayers();
         Player found = null;
         String lowerName = name.toLowerCase();
         int delta = Integer.MAX_VALUE;
+        Collection<? extends Player> players = Bukkit.getOnlinePlayers();
 
         for (Player player : players) {
             if (player.getName().toLowerCase().startsWith(lowerName)) {
@@ -47,7 +47,7 @@ public final class BukkitUtil {
     }
 
     /**
-     * Searches for and returns an OfflinePlayer by their name.
+     * Returns an OfflinePlayer by their name.
      *
      * @param name the name to search for
      * @return the found player or null
@@ -55,7 +55,9 @@ public final class BukkitUtil {
     public static OfflinePlayer getOfflinePlayer(String name) {
         OfflinePlayer player = getPlayer(name);
 
-        if (player == null) {
+        if (player != null) {
+            return player;
+        } else {
             UUID uuid = null;
 
             UUIDFetcher fetcher = new UUIDFetcher(Collections.singletonList(name));
@@ -69,13 +71,7 @@ public final class BukkitUtil {
                 e.printStackTrace();
             }
 
-            if (uuid ==  null) {
-                return null;
-            }
-
-            player = Bukkit.getOfflinePlayer(uuid);
+            return uuid == null ? null : Bukkit.getOfflinePlayer(uuid);
         }
-
-        return player;
     }
 }

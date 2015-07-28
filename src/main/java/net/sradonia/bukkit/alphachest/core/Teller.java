@@ -24,7 +24,7 @@ public class Teller {
     }
 
     public enum Type {
-        INFO, SUCCESS, WARNING, ERROR, MISC;
+        INFO, SUCCESS, WARNING, ERROR, MISC
     }
 
     /**

@@ -1,22 +1,22 @@
 package net.sradonia.bukkit.alphachest.util.fetchers;
 
-import com.google.common.collect.ImmutableList;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.ByteBuffer;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.Callable;
+
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+
+import com.google.common.collect.ImmutableList;
 
 /*
  * Copyright (c) 2015 Nate Mortensen
@@ -108,7 +108,7 @@ public class UUIDFetcher implements Callable<Map<String, UUID>> {
     }
 
     private static UUID getUUID(String id) {
-        return UUID.fromString(id.substring(0, 8) + "-" + id.substring(8, 12) + "-" + id.substring(12, 16) + "-" + id.substring(16, 20) + "-" +id.substring(20, 32));
+        return UUID.fromString(id.substring(0, 8) + "-" + id.substring(8, 12) + "-" + id.substring(12, 16) + "-" + id.substring(16, 20) + "-" + id.substring(20, 32));
     }
 
     public static byte[] toBytes(UUID uuid) {

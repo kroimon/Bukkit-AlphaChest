@@ -10,28 +10,20 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import net.sradonia.bukkit.alphachest.AlphaChest;
-import net.sradonia.bukkit.alphachest.core.VirtualChestManager;
 
-public class DeathListener implements Listener {
+public class PlayerListener implements Listener {
 
     private final AlphaChest plugin;
-    private final VirtualChestManager chestManager;
 
     private final boolean clearOnDeath;
     private final boolean dropOnDeath;
 
-    public DeathListener(AlphaChest plugin) {
+    public PlayerListener(AlphaChest plugin) {
         this.plugin = plugin;
-
-        chestManager = plugin.getChestManager();
 
         // Load the death settings
         clearOnDeath = plugin.getConfig().getBoolean("death.clear", false);
         dropOnDeath = plugin.getConfig().getBoolean("death.drop", false);
-    }
-
-    public AlphaChest getPlugin() {
-        return plugin;
     }
 
     @EventHandler(ignoreCancelled = true)
@@ -54,7 +46,7 @@ public class DeathListener implements Listener {
 
         if (drop) {
             List<ItemStack> drops = event.getDrops();
-            Inventory chest = chestManager.getChest(player.getUniqueId());
+            Inventory chest = plugin.getChestManager().getChest(player.getUniqueId());
 
             for (int i = 0; i < chest.getSize(); i++) {
                 drops.add(chest.getItem(i));
@@ -62,7 +54,7 @@ public class DeathListener implements Listener {
         }
 
         if (clear) {
-            chestManager.removeChest(player.getUniqueId());
+            plugin.getChestManager().removeChest(player.getUniqueId());
         }
     }
 }

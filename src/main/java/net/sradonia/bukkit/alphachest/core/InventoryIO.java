@@ -28,9 +28,7 @@ public class InventoryIO {
     @SuppressWarnings("deprecation")
     public static Inventory loadFromTextFile(File file) throws IOException {
         Inventory inventory = Bukkit.getServer().createInventory(null, 6 * 9);
-
         BufferedReader in = new BufferedReader(new FileReader(file));
-
         String line;
         int slot = 0;
 
@@ -67,10 +65,8 @@ public class InventoryIO {
      */
     public static Inventory loadFromYaml(File file) {
         YamlConfiguration yaml = YamlConfiguration.loadConfiguration(file);
-
         int inventorySize = yaml.getInt("size", 6 * 9);
         Inventory inventory = Bukkit.getServer().createInventory(null, inventorySize);
-
         ConfigurationSection items = yaml.getConfigurationSection("items");
 
         for (int slot = 0; slot < inventorySize; slot++) {
@@ -94,10 +90,8 @@ public class InventoryIO {
      */
     public static void saveToYaml(Inventory inventory, File file) throws IOException {
         YamlConfiguration yaml = new YamlConfiguration();
-
         int inventorySize = inventory.getSize();
         yaml.set("size", inventorySize);
-
         ConfigurationSection items = yaml.createSection("items");
 
         for (int slot = 0; slot < inventorySize; slot++) {

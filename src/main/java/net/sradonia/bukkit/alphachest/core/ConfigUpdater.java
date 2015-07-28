@@ -8,11 +8,6 @@ public class ConfigUpdater {
 
     private final AlphaChest plugin;
 
-    /**
-     * The current latest config version.
-     */
-    private static final int CONFIG_VERSION = 2;
-
     public ConfigUpdater(AlphaChest plugin) {
         this.plugin = plugin;
     }

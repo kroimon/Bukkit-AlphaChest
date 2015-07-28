@@ -18,13 +18,11 @@ import net.sradonia.bukkit.alphachest.AlphaChest;
 
 public class VirtualChestManager {
 
-    private final AlphaChest plugin;
-
     private final String YAML_CHEST_EXTENSION = ".chest.yml";
     private final int YAML_EXTENSION_LENGTH = YAML_CHEST_EXTENSION.length();
 
+    private final AlphaChest plugin;
     private final File chestsFolder;
-
     private final Map<UUID, Inventory> chests = new HashMap<>();
 
     public VirtualChestManager(AlphaChest plugin) {
@@ -87,17 +85,15 @@ public class VirtualChestManager {
      * @return the number of successfully written chests
      */
     public int save() {
-        int savedChests = 0;
-
         chestsFolder.mkdirs();
 
+        int savedChests = 0;
         Iterator<Entry<UUID, Inventory>> chestIterator = chests.entrySet().iterator();
 
         while (chestIterator.hasNext()) {
             Entry<UUID, Inventory> entry = chestIterator.next();
             UUID uuid = entry.getKey();
             Inventory chest = entry.getValue();
-
             File chestFile = new File(chestsFolder, uuid.toString() + YAML_CHEST_EXTENSION);
 
             if (chest == null) {
@@ -108,7 +104,6 @@ public class VirtualChestManager {
                 try {
                     // Write the chest file in YAML format
                     InventoryIO.saveToYaml(chest, chestFile);
-
                     savedChests++;
                 } catch (IOException e) {
                     plugin.getLogger().log(Level.WARNING, "Couldn't save chest file: " + chestFile.getName(), e);
@@ -147,33 +142,17 @@ public class VirtualChestManager {
      * Returns a player's virtual chest.
      *
      * @param uuid the UUID of the player to get the chest of
-     * @return the player's virtual chest or null
+     * @return the player's virtual chest
      */
     public Inventory getChest(UUID uuid) {
-        return chests.get(uuid);
-    }
+        Inventory chest = chests.get(uuid);
 
-    /**
-     * Returns a player's virtual chest. If forceCreate is set to true, a chest
-     * will be created for the player.
-     *
-     * @param uuid the UUID of the player to get the chest of
-     * @param forceCreate whether or not to create the chest if it doesn't already exist
-     * @return the found or created chest, or null
-     */
-    public Inventory getChest(UUID uuid, boolean forceCreate) {
-        if (forceCreate) {
-            Inventory chest = chests.get(uuid);
-
-            if (chest == null) {
-                chest = Bukkit.getServer().createInventory(null, 6 * 9);
-                chests.put(uuid, chest);
-            }
-
-            return chest;
+        if (chest == null) {
+            chest = Bukkit.getServer().createInventory(null, 6 * 9);
+            chests.put(uuid, chest);
         }
 
-        return getChest(uuid);
+        return chest;
     }
 
     /**

@@ -13,16 +13,9 @@ import net.sradonia.bukkit.alphachest.core.Teller;
 public class DisposalCommand implements CommandExecutor {
 
     private final AlphaChest plugin;
-    private final Teller teller;
 
     public DisposalCommand(AlphaChest plugin) {
         this.plugin = plugin;
-
-        teller = plugin.getTeller();
-    }
-
-    public AlphaChest getPlugin() {
-        return plugin;
     }
 
     @Override
@@ -30,7 +23,7 @@ public class DisposalCommand implements CommandExecutor {
         if (command.getName().equalsIgnoreCase("disposal")) {
             // Make sure the sender is a player
             if (!(sender instanceof Player)) {
-                teller.tell(sender, Teller.Type.ERROR, "Only players are able to open virtual disposal bins.");
+                plugin.getTeller().tell(sender, Teller.Type.ERROR, "Only players are able to open virtual disposal bins.");
                 return true;
             }
 
@@ -40,7 +33,7 @@ public class DisposalCommand implements CommandExecutor {
                 Inventory disposal = Bukkit.getServer().createInventory(player, 27, "Disposal");
                 player.openInventory(disposal);
             } else {
-                teller.tell(sender, Teller.Type.ERROR, "You are not allowed to use this command.");
+                plugin.getTeller().tell(sender, Teller.Type.ERROR, "You are not allowed to use this command.");
             }
 
             return true;

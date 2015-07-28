@@ -10,6 +10,8 @@ public class ConfigUpdater {
 
     public ConfigUpdater(AlphaChest plugin) {
         this.plugin = plugin;
+
+        updateConfig();
     }
 
     /**
@@ -24,7 +26,7 @@ public class ConfigUpdater {
     /**
      * Checks the config.yml and updates it if it's outdated.
      */
-    public void updateConfig() {
+    private void updateConfig() {
         switch (getConfigVersion()) {
             case 1:
                 plugin.getLogger().info("[Config] An update to the config was found!");

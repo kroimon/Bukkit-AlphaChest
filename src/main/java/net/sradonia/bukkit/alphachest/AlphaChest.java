@@ -25,11 +25,8 @@ public class AlphaChest extends JavaPlugin {
 
         // Initialize
         teller = new Teller(this);
-
         chestManager = new VirtualChestManager(this);
-
         configUpdater = new ConfigUpdater(this);
-        configUpdater.updateConfig();
 
         // Register the plugin's events
         getServer().getPluginManager().registerEvents(new PlayerListener(this), this);
@@ -41,7 +38,6 @@ public class AlphaChest extends JavaPlugin {
         getCommand("savechests").setExecutor(new SaveChestsCommand(this));
         getCommand("workbench").setExecutor(new WorkbenchCommand(this));
 
-        // Schedule an auto-save task
         // Schedule an auto-save task
         if (getConfig().getBoolean("auto-save.enabled")) {
             int autosaveInterval = getConfig().getInt("auto-save.interval") * 1200;

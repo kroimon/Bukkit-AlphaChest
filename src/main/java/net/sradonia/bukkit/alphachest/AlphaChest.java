@@ -2,15 +2,15 @@ package net.sradonia.bukkit.alphachest;
 
 import org.bukkit.plugin.java.JavaPlugin;
 
-import net.sradonia.bukkit.alphachest.command.ChestCommand;
-import net.sradonia.bukkit.alphachest.command.ClearChestCommand;
-import net.sradonia.bukkit.alphachest.command.DisposalCommand;
-import net.sradonia.bukkit.alphachest.command.SaveChestsCommand;
-import net.sradonia.bukkit.alphachest.command.WorkbenchCommand;
+import net.sradonia.bukkit.alphachest.commands.ChestCommand;
+import net.sradonia.bukkit.alphachest.commands.ClearChestCommand;
+import net.sradonia.bukkit.alphachest.commands.DisposalCommand;
+import net.sradonia.bukkit.alphachest.commands.SaveChestsCommand;
+import net.sradonia.bukkit.alphachest.commands.WorkbenchCommand;
 import net.sradonia.bukkit.alphachest.core.ConfigUpdater;
 import net.sradonia.bukkit.alphachest.core.Teller;
 import net.sradonia.bukkit.alphachest.core.VirtualChestManager;
-import net.sradonia.bukkit.alphachest.listener.PlayerListener;
+import net.sradonia.bukkit.alphachest.listeners.PlayerListener;
 
 public class AlphaChest extends JavaPlugin {
 

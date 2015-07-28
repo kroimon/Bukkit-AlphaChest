@@ -1,4 +1,4 @@
-package net.sradonia.bukkit.alphachest.command;
+package net.sradonia.bukkit.alphachest.commands;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;

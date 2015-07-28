@@ -1,4 +1,4 @@
-package net.sradonia.bukkit.alphachest.command;
+package net.sradonia.bukkit.alphachest.commands;
 
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
@@ -7,7 +7,7 @@ import org.bukkit.command.CommandSender;
 
 import net.sradonia.bukkit.alphachest.AlphaChest;
 import net.sradonia.bukkit.alphachest.core.Teller;
-import net.sradonia.bukkit.alphachest.util.BukkitUtil;
+import net.sradonia.bukkit.alphachest.utils.BukkitUtil;
 
 public class SaveChestCommand implements CommandExecutor {
 

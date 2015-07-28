@@ -1,4 +1,4 @@
-package net.sradonia.bukkit.alphachest.listener;
+package net.sradonia.bukkit.alphachest.listeners;
 
 import java.util.List;
 

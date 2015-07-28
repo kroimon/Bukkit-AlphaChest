@@ -1,4 +1,4 @@
-package net.sradonia.bukkit.alphachest.command;
+package net.sradonia.bukkit.alphachest.commands;
 
 import org.bukkit.GameMode;
 import org.bukkit.OfflinePlayer;
@@ -9,26 +9,15 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
 import net.sradonia.bukkit.alphachest.AlphaChest;
-import net.sradonia.bukkit.alphachest.core.Teller;
 import net.sradonia.bukkit.alphachest.core.Teller.Type;
-import net.sradonia.bukkit.alphachest.core.VirtualChestManager;
-import net.sradonia.bukkit.alphachest.util.BukkitUtil;
+import net.sradonia.bukkit.alphachest.utils.BukkitUtil;
 
 public class ChestCommand implements CommandExecutor {
 
     private final AlphaChest plugin;
-    private final Teller teller;
-    private final VirtualChestManager chestManager;
 
     public ChestCommand(AlphaChest plugin) {
         this.plugin = plugin;
-
-        teller = plugin.getTeller();
-        chestManager = plugin.getChestManager();
-    }
-
-    public AlphaChest getPlugin() {
-        return plugin;
     }
 
     @Override
@@ -36,7 +25,7 @@ public class ChestCommand implements CommandExecutor {
         if (command.getName().equalsIgnoreCase("chest")) {
             // Make sure the sender is a player
             if (!(sender instanceof Player)) {
-                teller.tell(sender, Type.ERROR, "Only players are able to open chests.");
+                plugin.getTeller().tell(sender, Type.ERROR, "Only players are able to open chests.");
                 return true;
             }
 
@@ -44,7 +33,7 @@ public class ChestCommand implements CommandExecutor {
 
             // Prevent opening of the chest in Creative Mode
             if (player.getGameMode() == GameMode.CREATIVE && !player.hasPermission("alphachest.chest.creativeMode")) {
-                teller.tell(sender, Type.ERROR, "You are not allowed to open your chest in Creative Mode!");
+                plugin.getTeller().tell(sender, Type.ERROR, "You are not allowed to open your chest in Creative Mode!");
                 return true;
             }
 
@@ -52,10 +41,10 @@ public class ChestCommand implements CommandExecutor {
                 case 0:
                     // Open the player's own chest
                     if (player.hasPermission("alphachest.chest")) {
-                        Inventory chest = chestManager.getChest(player.getUniqueId());
+                        Inventory chest = plugin.getChestManager().getChest(player.getUniqueId());
                         player.openInventory(chest);
                     } else {
-                        teller.tell(sender, Type.ERROR, "You are not allowed to use this command.");
+                        plugin.getTeller().tell(sender, Type.ERROR, "You are not allowed to use this command.");
                     }
 
                     return true;
@@ -65,13 +54,13 @@ public class ChestCommand implements CommandExecutor {
                         OfflinePlayer target = BukkitUtil.getOfflinePlayer(args[0]);
 
                         if (target == null) {
-                            teller.tell(player, Type.ERROR, String.format("Chest for %s not found", args[0]));
+                            plugin.getTeller().tell(player, Type.ERROR, String.format("Chest for %s not found", args[0]));
                         } else {
-                            Inventory chest = chestManager.getChest(target.getUniqueId());
+                            Inventory chest = plugin.getChestManager().getChest(target.getUniqueId());
                             player.openInventory(chest);
                         }
                     } else {
-                        teller.tell(player, Type.ERROR, "You are not allowed to open other user's chests.");
+                        plugin.getTeller().tell(player, Type.ERROR, "You are not allowed to open other user's chests.");
                     }
 
                     return true;

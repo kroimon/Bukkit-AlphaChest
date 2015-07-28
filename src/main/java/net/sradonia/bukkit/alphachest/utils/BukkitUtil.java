@@ -1,4 +1,4 @@
-package net.sradonia.bukkit.alphachest.util;
+package net.sradonia.bukkit.alphachest.utils;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -9,8 +9,6 @@ import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
-
-import net.sradonia.bukkit.alphachest.util.fetchers.UUIDFetcher;
 
 public final class BukkitUtil {
 

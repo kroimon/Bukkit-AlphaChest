@@ -1,4 +1,4 @@
-package net.sradonia.bukkit.alphachest.util.fetchers;
+package net.sradonia.bukkit.alphachest.utils;
 
 import java.io.InputStreamReader;
 import java.io.OutputStream;

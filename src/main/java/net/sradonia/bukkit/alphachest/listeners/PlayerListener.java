@@ -9,32 +9,26 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import net.sradonia.bukkit.alphachest.AlphaChestPlugin;
-import net.sradonia.bukkit.alphachest.VirtualChestManager;
+import net.sradonia.bukkit.alphachest.AlphaChest;
 
 public class PlayerListener implements Listener {
 
-    private final AlphaChestPlugin plugin;
-    private final VirtualChestManager chestManager;
+    private final AlphaChest plugin;
 
-    private boolean clearOnDeath;
-    private boolean dropOnDeath;
+    private final boolean clearOnDeath;
+    private final boolean dropOnDeath;
 
-    public PlayerListener(AlphaChestPlugin plugin, VirtualChestManager chestManager) {
+    public PlayerListener(AlphaChest plugin) {
         this.plugin = plugin;
-        this.chestManager = chestManager;
 
-        // Load the death event settings
-        clearOnDeath = plugin.getConfig().getBoolean("clearOnDeath");
-        dropOnDeath = plugin.getConfig().getBoolean("dropOnDeath");
+        // Load the death settings
+        clearOnDeath = plugin.getConfig().getBoolean("death.clear", false);
+        dropOnDeath = plugin.getConfig().getBoolean("death.drop", false);
     }
 
-    /**
-     * Handles a player's death and clears the chest or drops its contents depending on configuration and permissions.
-     */
     @EventHandler(ignoreCancelled = true)
-    public void onPlayerDeath(final PlayerDeathEvent event) {
-        final Player player = event.getEntity();
+    public void onPlayerDeath(PlayerDeathEvent event) {
+        Player player = event.getEntity();
 
         boolean drop = dropOnDeath;
         boolean clear = dropOnDeath || clearOnDeath;
@@ -52,7 +46,7 @@ public class PlayerListener implements Listener {
 
         if (drop) {
             List<ItemStack> drops = event.getDrops();
-            Inventory chest = chestManager.getChest(player.getUniqueId());
+            Inventory chest = plugin.getChestManager().getChest(player.getUniqueId());
 
             for (int i = 0; i < chest.getSize(); i++) {
                 drops.add(chest.getItem(i));
@@ -60,7 +54,7 @@ public class PlayerListener implements Listener {
         }
 
         if (clear) {
-            chestManager.removeChest(player.getUniqueId());
+            plugin.getChestManager().removeChest(player.getUniqueId());
         }
     }
 }

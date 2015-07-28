@@ -1,10 +1,9 @@
 name: ${project.name}
+main: net.sradonia.bukkit.alphachest.AlphaChest
 version: ${project.version}
-description: Plugin that allows you to have virtual private chests.
 author: kroimon
-
-main: net.sradonia.bukkit.alphachest.AlphaChestPlugin
-database: false
+description: >
+             Plugin that allows you to have virtual private chests.
 
 commands:
   chest:

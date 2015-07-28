@@ -4,7 +4,7 @@
 
     <groupId>net.sradonia.bukkit</groupId>
     <artifactId>AlphaChest</artifactId>
-    <version>1.18.0-SNAPSHOT</version>
+    <version>2.0.0-SNAPSHOT</version>
     <name>AlphaChest</name>
 
     <properties>
@@ -29,7 +29,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.2</version>
+                <version>3.3</version>
                 <configuration>
                     <source>1.7</source>
                     <target>1.7</target>
@@ -49,7 +49,7 @@
         <dependency>
             <groupId>org.bukkit</groupId>
             <artifactId>bukkit</artifactId>
-            <version>1.8.3-R0.1-SNAPSHOT</version>
+            <version>1.8.7-R0.1-SNAPSHOT</version>
             <type>jar</type>
             <scope>provided</scope>
         </dependency>

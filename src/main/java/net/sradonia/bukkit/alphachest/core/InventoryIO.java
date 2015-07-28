@@ -1,4 +1,4 @@
-package net.sradonia.bukkit.alphachest;
+package net.sradonia.bukkit.alphachest.core;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -7,7 +7,6 @@ import java.io.IOException;
 
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -26,17 +25,16 @@ public class InventoryIO {
      * @deprecated use {@link #loadFromYaml} instead
      */
     @Deprecated
+    @SuppressWarnings("deprecation")
     public static Inventory loadFromTextFile(File file) throws IOException {
-        final Inventory inventory = Bukkit.getServer().createInventory(null, 6 * 9);
-
-        final BufferedReader in = new BufferedReader(new FileReader(file));
-
+        Inventory inventory = Bukkit.getServer().createInventory(null, 6 * 9);
+        BufferedReader in = new BufferedReader(new FileReader(file));
         String line;
         int slot = 0;
 
         while ((line = in.readLine()) != null) {
-            if (!line.equals("")) {
-                final String[] parts = line.split(":");
+            if (!line.isEmpty()) {
+                String[] parts = line.split(":");
 
                 try {
                     int type = Integer.parseInt(parts[0]);
@@ -64,22 +62,16 @@ public class InventoryIO {
      *
      * @param file the YAML file to load
      * @return the loaded inventory
-     * @throws IOException if the file could not be read
-     * @throws InvalidConfigurationException if the file could not be parsed
      */
-    public static Inventory loadFromYaml(File file) throws IOException, InvalidConfigurationException {
-        YamlConfiguration yaml = new YamlConfiguration();
-        yaml.load(file);
-
+    public static Inventory loadFromYaml(File file) {
+        YamlConfiguration yaml = YamlConfiguration.loadConfiguration(file);
         int inventorySize = yaml.getInt("size", 6 * 9);
-
         Inventory inventory = Bukkit.getServer().createInventory(null, inventorySize);
-
         ConfigurationSection items = yaml.getConfigurationSection("items");
 
         for (int slot = 0; slot < inventorySize; slot++) {
             String slotString = String.valueOf(slot);
-
+            
             if (items.isItemStack(slotString)) {
                 ItemStack itemStack = items.getItemStack(slotString);
                 inventory.setItem(slot, itemStack);
@@ -98,10 +90,8 @@ public class InventoryIO {
      */
     public static void saveToYaml(Inventory inventory, File file) throws IOException {
         YamlConfiguration yaml = new YamlConfiguration();
-
         int inventorySize = inventory.getSize();
         yaml.set("size", inventorySize);
-
         ConfigurationSection items = yaml.createSection("items");
 
         for (int slot = 0; slot < inventorySize; slot++) {

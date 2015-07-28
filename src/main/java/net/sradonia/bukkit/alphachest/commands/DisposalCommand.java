@@ -7,15 +7,15 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
-import net.sradonia.bukkit.alphachest.Teller;
-import net.sradonia.bukkit.alphachest.VirtualChestManager;
+import net.sradonia.bukkit.alphachest.AlphaChest;
+import net.sradonia.bukkit.alphachest.core.Teller;
 
 public class DisposalCommand implements CommandExecutor {
 
-    private final VirtualChestManager chestManager;
+    private final AlphaChest plugin;
 
-    public DisposalCommand(VirtualChestManager chestManager) {
-        this.chestManager = chestManager;
+    public DisposalCommand(AlphaChest plugin) {
+        this.plugin = plugin;
     }
 
     @Override
@@ -23,7 +23,7 @@ public class DisposalCommand implements CommandExecutor {
         if (command.getName().equalsIgnoreCase("disposal")) {
             // Make sure the sender is a player
             if (!(sender instanceof Player)) {
-                Teller.tell(sender, Teller.Type.ERROR, "Only players are able to open virtual workbenches.");
+                plugin.getTeller().tell(sender, Teller.Type.ERROR, "Only players are able to open virtual disposal bins.");
                 return true;
             }
 
@@ -33,7 +33,7 @@ public class DisposalCommand implements CommandExecutor {
                 Inventory disposal = Bukkit.getServer().createInventory(player, 27, "Disposal");
                 player.openInventory(disposal);
             } else {
-                Teller.tell(sender, Teller.Type.ERROR, "You are not allowed to use this command.");
+                plugin.getTeller().tell(sender, Teller.Type.ERROR, "You are not allowed to use this command.");
             }
 
             return true;
